@@ -5,9 +5,10 @@ CTab::CTab(QObject *parent)
     , m_settings()
 {
     // Set default settings
+    log_notice("Init engine");
 }
 
-void CTab::initContext(QmlApplicationViewer& viewer)
+void CTab::initContext(QmlApplicationViewer &viewer)
 {
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 
@@ -16,7 +17,7 @@ void CTab::initContext(QmlApplicationViewer& viewer)
     m_context->setContextProperty("CTab", this);
 }
 
-void CTab::initRoot(QmlApplicationViewer& viewer)
+void CTab::initRoot(QmlApplicationViewer &viewer)
 {
     m_root_object = viewer.rootObject();
 }
