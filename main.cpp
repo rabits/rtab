@@ -83,7 +83,7 @@ CSignalTranslator<CFloatingPointException> g_objFloatingPointExceptionTranslator
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
-    log_notice("Init rTab v"PROJECT_VERSION);
+    log_notice("Init rTab v%s", PROJECT_VERSION);
 
     QCoreApplication::setOrganizationName("Rabits");
     QCoreApplication::setOrganizationDomain("rabits.ru");

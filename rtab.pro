@@ -75,7 +75,11 @@ SOURCES += main.cpp \
     src/song/effect/ceffecttrill.cpp \
     src/song/effect/ceffecttremolopicking.cpp \
     src/song/effect/cpoint.cpp \
-    src/song/clyrics.cpp
+    src/song/clyrics.cpp \
+    src/io/base/cfilemgr.cpp \
+    src/io/tg/cstream.cpp \
+    src/io/tg/cinputstream.cpp \
+    src/io/tg/coutputstream.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -125,4 +129,11 @@ HEADERS += \
     src/song/effect/ceffecttrill.h \
     src/song/effect/ceffecttremolopicking.h \
     src/song/effect/cpoint.h \
-    src/song/clyrics.h
+    src/song/clyrics.h \
+    src/io/base/cfileformat.h \
+    src/io/base/cinputstreambase.h \
+    src/io/base/coutputstreambase.h \
+    src/io/base/cfilemgr.h \
+    src/io/tg/cstream.h \
+    src/io/tg/cinputstream.h \
+    src/io/tg/coutputstream.h

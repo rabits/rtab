@@ -3,7 +3,7 @@
 CScale::CScale(QObject *parent)
     : QObject(parent)
     , m_key(0)
-    , m_notes({false, false, false, false, false, false, false, false, false, false, false, false})
+    , m_notes { false, false, false, false, false, false, false, false, false, false, false, false }
 {
 }
 
