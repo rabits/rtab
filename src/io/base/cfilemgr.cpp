@@ -23,16 +23,16 @@ CFileMgr::~CFileMgr()
     m_output_streams.clear();
 }
 
-CSong CFileMgr::load(QDataStream *stream) const
+CSong* CFileMgr::load(QDataStream *stream) const
 {
-    log_notice("Start loading file");
+    log_info("Start loading file");
     try {
         stream->device()->open(QIODevice::ReadOnly);
         stream->device()->reset();
         for( uint i = 0; i < inputStreamCount(); i++)
         {
             CInputStreamBase *reader = m_input_streams.at(i);
-            log_notice("Processing loader: %s", reader->getFileFormat().name().toStdString().c_str());
+            log_debug("Processing loader: %s", reader->getFileFormat().name().toStdString().c_str());
             reader->init(stream);
             if( reader->isSupportedVersion() )
                 return reader->readSong();
@@ -44,7 +44,7 @@ CSong CFileMgr::load(QDataStream *stream) const
         log_error("Exception ocurred: %s");
     }
 
-    throw EXCEPTION("Unsupported file format");
+    throw EXCEPTION(log_error("Unsupported file format"));
 }
 
 void CFileMgr::write(QDataStream *stream, CSong &song) const

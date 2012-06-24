@@ -4,7 +4,8 @@
 #include <QString>
 
 #include "cfileformat.h"
-#include "../../song/csong.h"
+
+class CSong;
 
 class COutputStreamBase
 {
@@ -16,7 +17,7 @@ public:
     virtual bool isSupportedExtension(QString extension) = 0;
 
     virtual CFileFormat getFileFormat() = 0;
-    virtual void        writeSong(CSong song) = 0;
+    virtual void        writeSong(CSong *song) = 0;
 };
 
 #endif // COUTPUTSTREAMBASE_H

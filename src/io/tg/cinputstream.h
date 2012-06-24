@@ -14,10 +14,10 @@ public:
 
     void init(QDataStream *stream);
     bool isSupportedVersion();
-    bool isSupportedVersion(QString &version) { bool out = version == tgVersion(); log_notice(out ? "Version good" : "Version not good"); return out; }
+    bool isSupportedVersion(QString &version) { log_debug(version == tgVersion() ? "Version match ('%1' == '%2')" : "Version not match ('%1' != '%2')", version, tgVersion() ); return version == tgVersion(); }
 
     inline CFileFormat getFileFormat() { return CFileFormat("TuxGuitar", QStringList(tgExtension())); }
-    CSong              readSong();
+    CSong*             readSong();
 
 private:
     inline void readVersion() { if( m_version.isEmpty() ) m_version = readUnsignedByteString(); }

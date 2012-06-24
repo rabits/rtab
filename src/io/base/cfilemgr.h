@@ -26,8 +26,8 @@ public:
     uint outputStreamCount() const { return m_output_streams.count(); }
     void outputStreamAdd(COutputStreamBase *stream) { m_output_streams.append(stream); }
 
-    CSong load(QDataStream *stream) const;
-    void  write(QDataStream *stream, CSong &song) const;
+    CSong* load(QDataStream *stream) const;
+    void   write(QDataStream *stream, CSong &song) const;
 
 private:
     explicit CFileMgr();

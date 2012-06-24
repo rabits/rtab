@@ -16,11 +16,11 @@
 class CTab : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QList<CSong> songs READ songs WRITE songs NOTIFY songsChanged)
+    Q_PROPERTY(QList<CSong*> songs READ songs WRITE songs NOTIFY songsChanged)
 
 public:
-    inline static CTab* getInstance() { if( s_pInstance == NULL ) s_pInstance = new CTab(); return s_pInstance; }
-    inline static void  destroyInstance() { delete s_pInstance; }
+    inline static CTab* i()               { if( sp_instance == NULL ) sp_instance = new CTab(); return sp_instance; }
+    inline static void  destroyInstance() { delete sp_instance; }
 
     void initContext(QmlApplicationViewer &viewer);
     void initRoot(QmlApplicationViewer &viewer);
@@ -29,14 +29,17 @@ public:
     Q_INVOKABLE QVariant setting(QString key, QString value = "");
 
     // --API--- //
-    inline const QList<CSong>& songs()                  { return m_songs; }
-    inline void                songs(QList<CSong> &val) { m_songs = val; emit songsChanged(); }
+    inline const QList<CSong*>& songs()                   { return m_songs; }
+    inline void                 songs(QList<CSong*> &val) { m_songs = val; emit songsChanged(); }
 
-    inline uint         songsCount()                       { return m_songs.count(); }
-    inline const CSong& song(uint index)                   { return m_songs[index]; }
-    inline void         song(uint index, CSong &val)       { m_songs[index] = val; emit songsChanged(); }
-    inline void         songAdd(CSong &val)                { m_songs.append(val); emit songsChanged(); }
-    inline void         songRemove(uint index, CSong &val) { m_songs[index] = val; emit songsChanged(); }
+    inline uint         songsCount()                 { return m_songs.count(); }
+    inline const CSong* song(uint index)             { return m_songs[index]; }
+    inline void         songAdd(CSong *val)          { m_songs.append(val); emit songsChanged(); }
+    inline void         songRemove(CSong *val)       { delete val; m_songs.removeOne(val); emit songsChanged(); }
+
+    Q_INVOKABLE CSong* songOpen(QString file_path);
+    Q_INVOKABLE void   songSave(QString file_path);
+    Q_INVOKABLE void   songClose(CSong *song);
 
 signals:
     void songsChanged();
@@ -44,14 +47,14 @@ signals:
 private:
     explicit CTab(QObject *parent = 0);
 
-    static CTab* s_pInstance;
+    static CTab* sp_instance;
 
     QGraphicsObject*     m_root_object;
     QDeclarativeContext* m_context;
 
-    QSettings   m_settings;
+    QSettings     m_settings;
 
-    QList<CSong> m_songs;
+    QList<CSong*> m_songs;
 };
 
 #endif // CTAB_H

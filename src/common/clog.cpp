@@ -2,72 +2,63 @@
 
 using namespace Common;
 
-#include <cstdio>
-#include <cstdarg>
-#include <cstring>
+#include <iostream>
+#include <QString>
 
-CLog::LogLevel CLog::s_displayLevel = CLog::LOG_NONE;
-unsigned long CLog::s_logTime = 0;
+QList<QByteArray> CLog::s_msg_stack = QList<QByteArray>();
 
-bool CLog::log(CLog::LogLevel level, const char* format, ...)
+const char *CLog::log(const char *level, const char *format, QString &arg1)
 {
-    if( level < s_displayLevel )
-        return level < 5;
+    if( s_msg_stack.count() > 9 )
+        s_msg_stack.removeFirst();
 
-    char msgbuffer[CONFIG_LOG_BUFFER];
-    char msglevel[] = "       ";
-    std::va_list ap;
+    QByteArray msg = QString("[rTab] %1: %2\n").arg(level).arg(format).arg(arg1).toUtf8();
 
-    // Select output
-    FILE* output;
-    if( level < CLog::LOG_WARN )
-        output = stdout;
-    else
-        output = stderr;
+    std::cerr << msg.constData();
+    s_msg_stack.append(msg);
 
-    va_start(ap, format);
-    vsnprintf(msgbuffer, CONFIG_LOG_BUFFER, format, ap);
-    va_end(ap);
-
-    // Message level
-    switch( level ) {
-        case 1:
-            std::strcpy(msglevel, "DEBUG");
-            break;
-        case 2:
-            std::strcpy(msglevel, "INFO");
-            break;
-        case 3:
-            std::strcpy(msglevel, "NOTICE");
-            break;
-        case 4:
-            std::strcpy(msglevel, "WARN");
-            break;
-        case 5:
-            std::strcpy(msglevel, "ERROR");
-            break;
-        case 6:
-            std::strcpy(msglevel, "CRIT");
-            break;
-        case 7:
-            std::strcpy(msglevel, "ALERT");
-            break;
-        case 8:
-            std::strcpy(msglevel, "FATAL");
-            break;
-        case 0:
-            return true;
-    }
-
-    std::fprintf(output, "[rTab] %6s: %s\n", msglevel, msgbuffer);
-
-    return level < CLog::LOG_ERROR;
+    return s_msg_stack.last().constData();
 }
 
-CLog::LogLevel CLog::displayLogLevel(CLog::LogLevel level)
+const char *CLog::log(const char *level, const char *format, QString &arg1, QString arg2)
 {
-    if( level != CLog::LOG_NONE )
-        s_displayLevel = level;
+    if( s_msg_stack.count() > 9 )
+        s_msg_stack.removeFirst();
 
-    return s_displayLevel;
+    QByteArray msg = QString("[rTab] %1: %2\n").arg(level).arg(format).arg(arg1).arg(arg2).toUtf8();
+
+    std::cerr << msg.constData();
+    s_msg_stack.append(msg);
+
+    return s_msg_stack.last().constData();
+}
+
+const char *CLog::log(const char *level, const char *format, QString &arg1, QString &arg2, QString &arg3)
+{
+    if( s_msg_stack.count() > 9 )
+        s_msg_stack.removeFirst();
+
+    QByteArray msg = QString("[rTab] %1: %2\n").arg(level).arg(format).arg(arg1).arg(arg2).arg(arg3).toUtf8();
+
+    std::cerr << msg.constData();
+    s_msg_stack.append(msg);
+
+    return s_msg_stack.last().constData();
+}
+
+const char* CLog::log(const char *level, const char *format, ...)
+{
+    if( s_msg_stack.count() > 9 )
+        s_msg_stack.removeFirst();
+
+    va_list ap;
+
+    va_start(ap, format);
+    QByteArray msg = QString("[rTab] %1: %2\n").arg(level).arg(QString().vsprintf(format, ap)).toUtf8();
+    va_end(ap);
+
+    std::cerr << msg.constData();
+    s_msg_stack.append(msg);
+
+    return s_msg_stack.last().constData();
 }

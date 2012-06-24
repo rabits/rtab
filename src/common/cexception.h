@@ -1,7 +1,7 @@
 #ifndef CEXCEPTION_H
 #define CEXCEPTION_H
 
-#include <iostream>
+#include <QString>
 
 #ifdef CONFIG_DEBUG
 #   define EXCEPTION(message)       Common::CException(message, __FUNCTION__, __FILE__, __LINE__) ///< Hard exception
@@ -29,7 +29,7 @@ namespace Common
          * @param description
          * @param source
          */
-        CException(const std::string &description, const std::string &source);
+        CException(const QString &description, const QString &source);
 
         /** @brief Extended constructor for CONFIG_DEBUG mode
          *
@@ -38,7 +38,7 @@ namespace Common
          * @param file
          * @param line
          */
-        CException(const std::string &description, const std::string &source, const char* file, long line);
+        CException(const QString &description, const QString &source, const char* file, long line);
 
         /** @brief Default destructor
          */
@@ -48,44 +48,44 @@ namespace Common
         /** @brief Get formatted description with line number etc...
          *
          */
-        const std::string& fullDescription() const;
+        inline const QString& fullDescription() const { return m_full_description; }
 
         /** @brief Get function name
          *
-         * @return const std::string&
+         * @return const QString&
          */
-        inline const std::string& source() const { return m_source; }
+        inline const QString& source() const { return m_source; }
 
         /** @brief Get file path
          *
-         * @return const std::string&
+         * @return const QString&
          */
-        inline const std::string& file() const { return m_file; }
+        inline const QString& file() const { return m_file; }
 
         /** @brief Get line number
          *
          * @return long
          */
-        inline long               line() const { return m_line; }
+        inline long           line() const { return m_line; }
 
         /** @brief Get description
          *
-         * @return const std::string&
+         * @return const QString&
          */
-        inline const std::string& description() const { return m_description; }
+        inline const QString& description() const { return m_description; }
 
         /** @brief Override std::exception::what()
          *
          * @return const char *
          */
-        inline const char*        what() const throw() { return fullDescription().c_str(); }
+        inline const char*    what() const throw() { return m_full_description.toUtf8().constData(); }
 
     private:
-        std::string          m_source;          ///< Function name
-        std::string          m_file;            ///< File path
-        std::string          m_description;     ///< Description message
-        long                 m_line;            ///< Line number
-        mutable std::string  m_fullDescription; ///< Full Description message
+        QString          m_source;           ///< Function name
+        QString          m_file;             ///< File path
+        QString          m_description;      ///< Description message
+        long             m_line;             ///< Line number
+        mutable QString  m_full_description; ///< Full Description message
     };
 }
 #endif // CEXCEPTION_H

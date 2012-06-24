@@ -11,7 +11,7 @@ public:
     CStream();
 
     inline QString tgName()      { return "TuxGuitar File Format"; }
-    inline QString tgVersion()   { return tgName() + " - 1.2"; }
+    inline QString tgVersion()   { return tgName() + " - 1.2.20111001"; }
     inline QString tgExtension() { return ".tg"; }
 
     enum TRACK {

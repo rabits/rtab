@@ -3,12 +3,14 @@
 #include "io/base/cfilemgr.h"
 #include <QFile>
 
+CTab* CTab::sp_instance = NULL;
+
 CTab::CTab(QObject *parent)
     : QObject(parent)
     , m_settings()
 {
     // Set default settings
-    log_notice("Init engine");
+    log_info("Init engine");
 }
 
 void CTab::initContext(QmlApplicationViewer &viewer)
@@ -23,9 +25,6 @@ void CTab::initContext(QmlApplicationViewer &viewer)
 void CTab::initRoot(QmlApplicationViewer &viewer)
 {
     m_root_object = viewer.rootObject();
-
-    QFile file("/home/psa/Projects/rtab/tmp/Untitled.tg");
-    CFileMgr::i()->load(new QDataStream(&file));
 }
 
 QVariant CTab::setting(QString key, QString value)
@@ -36,4 +35,27 @@ QVariant CTab::setting(QString key, QString value)
     return m_settings.value(key);
 }
 
-CTab* CTab::s_pInstance = NULL;
+CSong* CTab::songOpen(QString file_path)
+{
+    try {
+        QFile file(file_path);
+        CSong *song = CFileMgr::i()->load(new QDataStream(&file));
+        if( song != NULL )
+            songAdd(song);
+        return song;
+    }
+    catch( Common::CException const &e ) {
+        log_error("Can't load file '%s': %s", file_path.toStdString().c_str(), e.what());
+    }
+
+    return NULL;
+}
+
+void CTab::songSave(QString file_path)
+{
+}
+
+void CTab::songClose(CSong *song)
+{
+    songRemove(song);
+}

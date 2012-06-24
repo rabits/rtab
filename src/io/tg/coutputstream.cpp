@@ -1,5 +1,7 @@
 #include "coutputstream.h"
 
+#include "../../song/csong.h"
+
 COutputStream::COutputStream()
     : CStream()
     , COutputStreamBase()
@@ -25,7 +27,7 @@ CFileFormat COutputStream::getFileFormat()
     // TODO
 }
 
-void COutputStream::writeSong(CSong song)
+void COutputStream::writeSong(CSong *song)
 {
     // TODO
 }

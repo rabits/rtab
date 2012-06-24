@@ -4,6 +4,8 @@
 #include <QTextCodec>
 #include <QDebug>
 
+#include "../../song/csong.h"
+
 CInputStream::CInputStream()
     : CStream()
     , CInputStreamBase()
@@ -25,10 +27,10 @@ void CInputStream::init(QDataStream *stream)
 
 bool CInputStream::isSupportedVersion()
 {
-    log_notice("Is supported?");
     try {
+        log_debug("Reading version");
         readVersion();
-        log_notice("Version readed");
+        log_debug("Version readed");
         return isSupportedVersion(m_version);
     }
     catch( ... ) {
@@ -36,10 +38,13 @@ bool CInputStream::isSupportedVersion()
     }
 }
 
-CSong CInputStream::readSong()
+CSong* CInputStream::readSong()
 {
-    log_notice("Song reading");
+    log_info("Song reading");
+    CSong* song = new CSong();
     // TODO
+
+    return song;
 }
 
 QString CInputStream::readUnsignedByteString()
@@ -51,13 +56,13 @@ QString CInputStream::readUnsignedByteString()
 
 QString CInputStream::readString(int length)
 {
-    log_notice("Reading string length: %i", length);
+    log_debug("Reading string length: %i", length);
 
     QTextStream stream(m_data_stream->device());
     stream.setCodec(QTextCodec::codecForName("utf16"));
     QString out = stream.read(length);
 
-    log_notice("Finished reading %s", out.toStdString().c_str());
+    log_debug("Finished reading %1", out);
 
     return out;
 }

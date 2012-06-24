@@ -2,7 +2,8 @@
 #define CINPUTSTREAMBASE_H
 
 #include "cfileformat.h"
-#include "../../song/csong.h"
+
+class CSong;
 
 class CInputStreamBase
 {
@@ -14,7 +15,7 @@ public:
     virtual bool isSupportedVersion() = 0;
 
     virtual CFileFormat getFileFormat() = 0;
-    virtual CSong       readSong() = 0;
+    virtual CSong*      readSong() = 0;
 };
 
 #endif // CINPUTSTREAMBASE_H

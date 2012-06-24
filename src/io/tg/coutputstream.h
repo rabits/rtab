@@ -16,7 +16,7 @@ public:
     bool isSupportedExtension(QString extension);
 
     CFileFormat getFileFormat();
-    void        writeSong(CSong song);
+    void        writeSong(CSong *song);
 };
 
 #endif // COUTPUTSTREAM_H
