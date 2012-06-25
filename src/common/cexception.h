@@ -3,12 +3,6 @@
 
 #include <QString>
 
-#ifdef CONFIG_DEBUG
-#   define EXCEPTION(message)       Common::CException(message, __FUNCTION__, __FILE__, __LINE__) ///< Hard exception
-#else
-#   define EXCEPTION(message)       Common::CException(message, __FUNCTION__)                     ///< Simple exception
-#endif
-
 /** @brief Specialised functions
  */
 namespace Common

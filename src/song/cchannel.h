@@ -11,7 +11,7 @@ class CChannel
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int                      id READ id WRITE id NOTIFY idChanged)
+    Q_PROPERTY(qint16                   id READ id WRITE id NOTIFY idChanged)
     Q_PROPERTY(short                    bank READ bank WRITE bank NOTIFY bankChanged)
     Q_PROPERTY(short                    program READ program WRITE program NOTIFY programChanged)
     Q_PROPERTY(short                    volume READ volume WRITE volume NOTIFY volumeChanged)
@@ -48,7 +48,7 @@ public:
     static const short DEFAULT_TREMOLO = 0;
 
     // ---API--- //
-    inline int                             id()         const { return m_id; }
+    inline qint16                          id()         const { return m_id; }
     inline short                           bank()       const { return m_bank; }
     inline short                           program()    const { return m_program; }
     inline short                           volume()     const { return m_volume; }
@@ -60,7 +60,7 @@ public:
     inline const QString&                  name()       const { return m_name; }
     inline const QList<CChannelParameter>& parameters() const { return m_parameters; }
 
-    inline void id(const int val)                               { m_id = val; emit idChanged(); }
+    inline void id(const qint16 val)                            { m_id = val; emit idChanged(); }
     inline void bank(const short val)                           { m_bank = val; emit bankChanged(); }
     inline void program(const short val)                        { m_program = val; emit programChanged(); }
     inline void volume(const short val)                         { m_volume = val; emit volumeChanged(); }
@@ -72,12 +72,12 @@ public:
     inline void name(const QString &val)                        { m_name = val; emit nameChanged(); }
     inline void parameters(const QList<CChannelParameter> &val) { m_parameters = val; emit parametersChanged(); }
 
-    inline uint                     parametersCount()                                   const { return m_parameters.count(); }
-    inline const CChannelParameter& parameter(const uint index)                         const { return m_parameters[index]; }
-    inline void                     parameter(const uint index, const CChannelParameter &val) { m_parameters[index] = val; emit parametersChanged(); }
-    inline void                     parameterAdd(const CChannelParameter &val)                { m_parameters.append(val); emit parametersChanged(); }
-    inline void                     parameterRemove(const uint index)                         { m_parameters.removeAt(index); emit parametersChanged(); }
-    inline void                     parameterRemove(const CChannelParameter &val)             { m_parameters.removeOne(val); emit parametersChanged(); }
+    inline quint16                  parametersCount()                                      const { return m_parameters.count(); }
+    inline const CChannelParameter& parameter(const quint16 index)                         const { return m_parameters[index]; }
+    inline void                     parameter(const quint16 index, const CChannelParameter &val) { m_parameters[index] = val; emit parametersChanged(); }
+    inline void                     parameterAdd(const CChannelParameter &val)                   { m_parameters.append(val); emit parametersChanged(); }
+    inline void                     parameterRemove(const quint16 index)                         { m_parameters.removeAt(index); emit parametersChanged(); }
+    inline void                     parameterRemove(const CChannelParameter &val)                { m_parameters.removeOne(val); emit parametersChanged(); }
 
     inline bool isPercussionChannel() const { return bank() == DEFAULT_PERCUSSION_BANK; }
 
@@ -95,7 +95,7 @@ signals:
     void parametersChanged();
 
 private:
-    int                      m_id;
+    quint16                  m_id;
     short                    m_bank;
     short                    m_program;
     short                    m_volume;

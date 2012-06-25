@@ -21,9 +21,11 @@ public:
 
 private:
     inline void readVersion() { if( m_version.isEmpty() ) m_version = readUnsignedByteString(); }
+    CSong*      read();
 
     QString readUnsignedByteString();
-    QString readString(int length);
+    qint8   readByte();
+    QString readString(quint64 length);
 
     QDataStream *m_data_stream;
     QString      m_version;

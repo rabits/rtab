@@ -9,6 +9,10 @@ debug {
     message("DEBUG MODE ON")
 }
 
+release: message("DEBUG MODE OFF")
+
+debug: release: error("debug release builds is not supported. Add to release build 'CONFIG-=debug' and to debug build 'CONFIG-=release' $${CONFIG}")
+
 QMAKE_CXXFLAGS += -std=c++0x
 
 # Add more folders to ship with the application, here

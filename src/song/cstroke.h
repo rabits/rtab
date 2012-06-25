@@ -12,7 +12,7 @@ class CStroke
 {
     Q_OBJECT
     Q_PROPERTY(STROKE direction READ direction WRITE direction NOTIFY directionChanged)
-    Q_PROPERTY(int    value READ value WRITE value NOTIFY valueChanged)
+    Q_PROPERTY(qint16 value READ value WRITE value NOTIFY valueChanged)
 
 public:
     explicit CStroke(QObject *parent = 0);
@@ -29,12 +29,12 @@ public:
 
     // ---API--- //
     inline STROKE direction() const { return m_direction; }
-    inline int    value()     const { return m_value; }
+    inline qint16 value()     const { return m_value; }
 
     inline void direction(const STROKE val) { m_direction = val; emit directionChanged(); }
-    inline void value(const int val)        { m_value = val; emit valueChanged(); }
+    inline void value(const qint16 val)     { m_value = val; emit valueChanged(); }
 
-    int getIncrementTime(const CBeat *beat) const;
+    qint64 getIncrementTime(const CBeat *beat) const;
 
 signals:
     void directionChanged();
@@ -42,7 +42,7 @@ signals:
 
 private:
     STROKE m_direction;
-    int    m_value;
+    qint16    m_value;
 };
 
 #endif // CSTROKE_H

@@ -41,10 +41,38 @@ bool CInputStream::isSupportedVersion()
 CSong* CInputStream::readSong()
 {
     log_info("Song reading");
-    CSong* song = new CSong();
-    // TODO
 
-    return song;
+    if( isSupportedVersion() )
+    {
+        CSong* song = read();
+        m_data_stream->device()->close();
+        return song;
+    }
+    throw EXCEPTION("Unsupported file version");
+}
+
+CSong* CInputStream::read()
+{
+    CSong* song = new CSong();
+
+    song->name(readUnsignedByteString());
+    song->artist(readUnsignedByteString());
+    song->album(readUnsignedByteString());
+    song->author(readUnsignedByteString());
+    song->date(readUnsignedByteString());
+    song->copyright(readUnsignedByteString());
+    song->writer(readUnsignedByteString());
+    song->transcriber(readUnsignedByteString());
+    song->comments(readUnsignedByteString());
+
+    qint8 channel_count = readByte();
+}
+
+qint8 CInputStream::readByte()
+{
+    qint16 data;
+    (*m_data_stream) >> data;
+    return (qint8)data;
 }
 
 QString CInputStream::readUnsignedByteString()
@@ -54,7 +82,7 @@ QString CInputStream::readUnsignedByteString()
     return readString( data & 0xFF );
 }
 
-QString CInputStream::readString(int length)
+QString CInputStream::readString(quint64 length)
 {
     log_debug("Reading string length: %i", length);
 

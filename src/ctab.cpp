@@ -37,16 +37,26 @@ QVariant CTab::setting(QString key, QString value)
 
 CSong* CTab::songOpen(QString file_path)
 {
+    log_notice("Start loading file '%1'", file_path);
+
+    QFile file(file_path);
+    QDataStream *stream = new QDataStream(&file);
+
     try {
-        QFile file(file_path);
-        CSong *song = CFileMgr::i()->load(new QDataStream(&file));
+        CSong *song = CFileMgr::i()->load(stream);
         if( song != NULL )
+        {
             songAdd(song);
+            log_info("File loading completed '%1'", file_path);
+        }
         return song;
     }
     catch( Common::CException const &e ) {
-        log_error("Can't load file '%s': %s", file_path.toStdString().c_str(), e.what());
+        log_error("Can't load file '%1': %2", file_path, e.fullDescription());
     }
+
+    delete stream;
+    file.close();
 
     return NULL;
 }

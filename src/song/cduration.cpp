@@ -28,9 +28,9 @@ CDuration &CDuration::operator =(const CDuration &obj)
     return *this;
 }
 
-long CDuration::time() const
+qint64 CDuration::time() const
 {
-    long time = (QUARTER_TIME * (4.0f / value()));
+    qint64 time = (QUARTER_TIME * (4.0f / value()));
     if( dotted() )
         time += time / 2;
     else if( doubleDotted() )
@@ -39,7 +39,7 @@ long CDuration::time() const
     return divisionType().convertTime(time);
 }
 
-CDuration CDuration::fromTime(long in_time) const
+CDuration CDuration::fromTime(qint64 in_time) const
 {
     CDuration minDuration;
     minDuration.value(SIXTY_FOURTH);
@@ -48,7 +48,7 @@ CDuration CDuration::fromTime(long in_time) const
     return fromTime(in_time, minDuration);
 }
 
-CDuration CDuration::fromTime(long in_time, CDuration minDuration, int diff) const
+CDuration CDuration::fromTime(qint64 in_time, CDuration minDuration, qint32 diff) const
 {
     CDuration tmpDuration;
     tmpDuration.value(WHOLE);
@@ -57,10 +57,10 @@ CDuration CDuration::fromTime(long in_time, CDuration minDuration, int diff) con
     bool finish = false;
     while(!finish)
     {
-        long tmpTime = tmpDuration.time();
+        qint64 tmpTime = tmpDuration.time();
         if( (tmpTime - diff) <= in_time )
         {
-            if( qAbs<long>(tmpTime - in_time) < qAbs<long>(minDuration.time() - in_time) )
+            if( qAbs<qint64>(tmpTime - in_time) < qAbs<qint64>(minDuration.time() - in_time) )
                 minDuration = tmpDuration;
         }
         if( tmpDuration.dotted() )
@@ -80,10 +80,10 @@ CDuration CDuration::fromTime(long in_time, CDuration minDuration, int diff) con
     return minDuration;
 }
 
-int CDuration::index() const
+qint16 CDuration::index() const
 {
-    int index = 0;
-    int val = value();
+    qint16 index = 0;
+    qint16 val = value();
     while( (val = (val >> 1)) > 0 )
         index++;
 

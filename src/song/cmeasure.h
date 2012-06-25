@@ -15,7 +15,7 @@ class CMeasure
 {
     Q_OBJECT
     Q_PROPERTY(CLEF                  clef READ clef WRITE clef NOTIFY clefChanged)
-    Q_PROPERTY(int                   keySignature READ keySignature WRITE keySignature NOTIFY keySignatureChanged)
+    Q_PROPERTY(qint16                keySignature READ keySignature WRITE keySignature NOTIFY keySignatureChanged)
     Q_PROPERTY(QList<CBeat>          beats READ beats WRITE beats NOTIFY beatsChanged)
     Q_PROPERTY(const CMeasureHeader* header READ header WRITE header NOTIFY headerChanged)
     Q_PROPERTY(CTrack*               track READ track WRITE track NOTIFY trackChanged)
@@ -35,28 +35,28 @@ public:
         CLEF_ALTO   = 4
     };
 
-    static const CLEF DEFAULT_CLEF = CLEF_TREBLE;
-    static const int  DEFAULT_KEY_SIGNATURE = 0;
+    static const CLEF   DEFAULT_CLEF = CLEF_TREBLE;
+    static const qint16 DEFAULT_KEY_SIGNATURE = 0;
 
     // ---API--- //
     inline CLEF                  clef()         const { return m_clef; }
-    inline int                   keySignature() const { return m_keySignature; }
+    inline qint16                keySignature() const { return m_keySignature; }
     inline const QList<CBeat>&   beats()        const { return m_beats; }
     inline const CMeasureHeader* header()       const { return p_header; }
     inline CTrack*               track()        const { return p_track; }
 
     inline void clef(const CLEF val)              { m_clef = val; emit clefChanged(); }
-    inline void keySignature(const int val)       { m_keySignature = val; emit keySignatureChanged(); }
+    inline void keySignature(const qint16 val)    { m_keySignature = val; emit keySignatureChanged(); }
     inline void beats(const QList<CBeat> &val)    { m_beats = val; emit beatsChanged(); }
     inline void header(const CMeasureHeader *val) { p_header = val; emit headerChanged(); }
     inline void track(CTrack *val)                { p_track = val; emit trackChanged(); }
 
-    inline uint         beatsCount()                       const { return m_beats.count(); }
-    inline const CBeat& beat(const uint index)             const { return m_beats[index]; }
-    inline void         beat(const uint index, const CBeat &val) { m_beats[index] = val; m_beats[index].measure(this); emit beatsChanged(); }
-    inline void         beatAdd(const CBeat &val)                { m_beats.append(val); m_beats.last().measure(this); emit beatsChanged(); }
-    inline void         beatRemove(const uint index)             { m_beats.removeAt(index); emit beatsChanged(); }
-    inline void         beatRemove(const CBeat &val)             { m_beats.removeOne(val); emit beatsChanged(); }
+    inline quint16      beatsCount()                          const { return m_beats.count(); }
+    inline const CBeat& beat(const quint16 index)             const { return m_beats[index]; }
+    inline void         beat(const quint16 index, const CBeat &val) { m_beats[index] = val; m_beats[index].measure(this); emit beatsChanged(); }
+    inline void         beatAdd(const CBeat &val)                   { m_beats.append(val); m_beats.last().measure(this); emit beatsChanged(); }
+    inline void         beatRemove(const quint16 index)             { m_beats.removeAt(index); emit beatsChanged(); }
+    inline void         beatRemove(const CBeat &val)                { m_beats.removeOne(val); emit beatsChanged(); }
 
 signals:
     void trackChanged();
@@ -69,7 +69,7 @@ private:
     void updateThisLinks();
 
     CLEF                  m_clef;
-    int                   m_keySignature;
+    qint16                m_keySignature;
     QList<CBeat>          m_beats;
     const CMeasureHeader *p_header;
     CTrack               *p_track;

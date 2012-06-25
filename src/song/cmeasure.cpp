@@ -34,6 +34,6 @@ CMeasure &CMeasure::operator =(const CMeasure &obj)
 
 void CMeasure::updateThisLinks()
 {
-    for( uint i = 0; i < beatsCount(); i++ )
+    for( quint16 i = 0; i < beatsCount(); i++ )
         m_beats[i].measure(this);
 }

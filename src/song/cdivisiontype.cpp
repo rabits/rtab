@@ -10,7 +10,7 @@ CDivisionType::CDivisionType(QObject *parent)
 {
 }
 
-CDivisionType::CDivisionType(int enter, int time, QObject *parent)
+CDivisionType::CDivisionType(qint16 enter, qint16 time, QObject *parent)
     : QObject(parent)
     , m_enter(enter)
     , m_time(time)

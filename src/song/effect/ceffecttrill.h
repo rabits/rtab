@@ -9,7 +9,7 @@ class CEffectTrill
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int       fret READ fret WRITE fret NOTIFY fretChanged)
+    Q_PROPERTY(quint16   fret READ fret WRITE fret NOTIFY fretChanged)
     Q_PROPERTY(CDuration duration READ duration WRITE duration NOTIFY durationChanged)
 
 public:
@@ -18,10 +18,10 @@ public:
     CEffectTrill& operator=(const CEffectTrill &obj);
 
     // ---API--- //
-    inline int              fret()     const { return m_fret; }
+    inline quint16          fret()     const { return m_fret; }
     inline const CDuration& duration() const { return m_duration; }
 
-    inline void fret(const int val)            { m_fret = val; emit fretChanged(); }
+    inline void fret(const quint16 val)        { m_fret = val; emit fretChanged(); }
     inline void duration(const CDuration &val) { m_duration = val; emit durationChanged(); }
 
 signals:
@@ -29,7 +29,7 @@ signals:
     void durationChanged();
 
 private:
-    int       m_fret;
+    quint16   m_fret;
     CDuration m_duration;
 };
 

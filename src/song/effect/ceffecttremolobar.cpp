@@ -20,7 +20,7 @@ CEffectTremoloBar &CEffectTremoloBar::operator =(const CEffectTremoloBar &obj)
     return *this;
 }
 
-CEffectTremoloBar::CPointTremoloBar::CPointTremoloBar(int position, int value, QObject *parent)
+CEffectTremoloBar::CPointTremoloBar::CPointTremoloBar(quint16 position, qint16 value, QObject *parent)
     : CPoint(position, value, parent)
 {
 }

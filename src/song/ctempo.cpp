@@ -1,6 +1,6 @@
 #include "ctempo.h"
 
-CTempo::CTempo(int value, QObject *parent)
+CTempo::CTempo(qint16 value, QObject *parent)
     : QObject(parent)
     , m_value(value)
 {

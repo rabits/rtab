@@ -10,14 +10,14 @@ CStream::CBeatData::CBeatData(CMeasure measure)
     : m_current_start(measure.header()->start())
     , m_voices()
 {
-    for(uint i = 0; i < CBeat::MAX_VOICES; i++)
+    for(quint16 i = 0; i < CBeat::MAX_VOICES; i++)
         m_voices[i] = CVoiceData(measure);
 }
 
-long CStream::CBeatData::currentStart()
+qint64 CStream::CBeatData::currentStart()
 {
-    long minimum_start = -1;
-    for(uint i = 0 ; i < voicesCount() ; i++ )
+    qint64 minimum_start = -1;
+    for(quint16 i = 0 ; i < voicesCount() ; i++ )
     {
         if( voice(i).start() > m_current_start )
         {

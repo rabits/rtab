@@ -11,7 +11,7 @@ class CDuration
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int           value READ value WRITE value NOTIFY valueChanged)
+    Q_PROPERTY(qint16        value READ value WRITE value NOTIFY valueChanged)
     Q_PROPERTY(bool          dotted READ dotted WRITE dotted NOTIFY dottedChanged)
     Q_PROPERTY(bool          doubleDotted READ doubleDotted WRITE doubleDotted NOTIFY doubleDottedChanged)
     Q_PROPERTY(CDivisionType divisionType READ divisionType WRITE divisionType NOTIFY divisionTypeChanged)
@@ -24,7 +24,7 @@ public:
     inline bool operator==(const CDuration &obj) const { return value() == obj.value() && doubleDotted() == obj.doubleDotted()
                                                                    && dotted() == obj.dotted() && divisionType() == obj.divisionType(); }
 
-    static const long QUARTER_TIME = 960;
+    static const qint64 QUARTER_TIME = 960;
 
     enum DURATION {
         WHOLE         = 1,
@@ -37,21 +37,21 @@ public:
     };
 
     // ---API--- //
-    inline int                  value()        const { return m_value; }
+    inline qint16               value()        const { return m_value; }
     inline bool                 dotted()       const { return m_dotted; }
     inline bool                 doubleDotted() const { return m_doubleDotted; }
     inline const CDivisionType& divisionType() const { return m_divisionType; }
 
-    inline void value(const int val)                   { m_value = val; emit valueChanged(); }
+    inline void value(const qint16 val)                { m_value = val; emit valueChanged(); }
     inline void dotted(const bool val)                 { m_dotted = val; emit dottedChanged(); }
     inline void doubleDotted(const bool val)           { m_doubleDotted = val; emit doubleDottedChanged(); }
     inline void divisionType(const CDivisionType &val) { m_divisionType = val; emit divisionTypeChanged(); }
 
-    CDuration        fromTime(long in_time) const;
-    inline CDuration fromTime(long in_time, CDuration &minDuration) const { return fromTime(in_time, minDuration, 10); }
-    CDuration        fromTime(long in_time, CDuration minDuration, int diff) const;
-    long time() const;
-    int index() const;
+    CDuration        fromTime(qint64 in_time) const;
+    inline CDuration fromTime(qint64 in_time, CDuration &minDuration) const { return fromTime(in_time, minDuration, 10); }
+    CDuration        fromTime(qint64 in_time, CDuration minDuration, qint32 diff) const;
+    qint64 time() const;
+    qint16 index() const;
 
 signals:
     void valueChanged();
@@ -60,7 +60,7 @@ signals:
     void divisionTypeChanged();
 
 private:
-    int           m_value;
+    qint16        m_value;
     bool          m_dotted;
     bool          m_doubleDotted;
     CDivisionType m_divisionType;

@@ -10,7 +10,7 @@ class CLyrics
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int     from READ from WRITE from NOTIFY fromChanged)
+    Q_PROPERTY(qint16  from READ from WRITE from NOTIFY fromChanged)
     Q_PROPERTY(QString lyrics READ lyrics WRITE lyrics NOTIFY lyricsChanged)
 
 public:
@@ -23,10 +23,10 @@ public:
     //static const char* REPLACE = " ";
 
     // ---API--- //
-    inline int            from()   const { return m_from; }
+    inline qint16         from()   const { return m_from; }
     inline const QString& lyrics() const { return m_lyrics; }
 
-    inline void from(const int val)        { m_from = val; emit fromChanged(); }
+    inline void from(const qint16 val)     { m_from = val; emit fromChanged(); }
     inline void lyrics(const QString &val) { m_lyrics = val; emit lyricsChanged(); }
 
     QStringList getLyricsBeats() const;
@@ -37,7 +37,7 @@ signals:
     void lyricsChanged();
 
 private:
-    int     m_from;
+    qint16  m_from;
     QString m_lyrics;
 };
 

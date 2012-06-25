@@ -16,14 +16,14 @@ public:
     CEffectTremoloBar(const CEffectTremoloBar &obj);
     CEffectTremoloBar& operator=(const CEffectTremoloBar &obj);
 
-    static const int MAX_POSITION_LENGTH = 12;
-    static const int MAX_VALUE_LENGTH    = 12;
+    static const qint16 MAX_POSITION_LENGTH = 12;
+    static const qint16 MAX_VALUE_LENGTH    = 12;
 
     class CPointTremoloBar : public CPoint
     {
     public:
-        explicit CPointTremoloBar(int position, int value, QObject *parent = 0);
-        inline long time(long duration) { return (duration * position() / MAX_POSITION_LENGTH); }
+        explicit CPointTremoloBar(quint16 position, qint16 value, QObject *parent = 0);
+        inline qint64 time(qint64 duration) { return (duration * position() / MAX_POSITION_LENGTH); }
     };
 
     // ---API--- //
@@ -31,11 +31,11 @@ public:
 
     inline void points(const QList<CPointTremoloBar> &val) { m_points = val; emit pointsChanged(); }
 
-    inline uint                    pointsCount()                      const { return m_points.count(); }
-    inline const CPointTremoloBar& point(const uint index)            const { return m_points[index]; }
-    inline void                    pointAdd(const int pos, const int val)   { m_points.append(CPointTremoloBar(pos, val)); emit pointsChanged(); }
-    inline void                    pointRemove(const uint index)            { m_points.removeAt(index); emit pointsChanged(); }
-    inline void                    pointRemove(const CPointTremoloBar &val) { m_points.removeOne(val); emit pointsChanged(); }
+    inline quint16                 pointsCount()                             const { return m_points.count(); }
+    inline const CPointTremoloBar& point(const quint16 index)                const { return m_points[index]; }
+    inline void                    pointAdd(const quint16 pos, const qint16 val)   { m_points.append(CPointTremoloBar(pos, val)); emit pointsChanged(); }
+    inline void                    pointRemove(const quint16 index)                { m_points.removeAt(index); emit pointsChanged(); }
+    inline void                    pointRemove(const CPointTremoloBar &val)        { m_points.removeOne(val); emit pointsChanged(); }
 
 signals:
     void pointsChanged();

@@ -7,8 +7,8 @@ class CEffectHormonic
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(TYPE type READ type WRITE type NOTIFY typeChanged)
-    Q_PROPERTY(int data READ data WRITE data NOTIFY dataChanged)
+    Q_PROPERTY(TYPE    type READ type WRITE type NOTIFY typeChanged)
+    Q_PROPERTY(quint16 data READ data WRITE data NOTIFY dataChanged)
 
 public:
     explicit CEffectHormonic(QObject *parent = 0);
@@ -30,9 +30,9 @@ public:
         TYPE_SEMI       = 5
     };
 
-    static const int MIN_ARTIFICIAL_OFFSET = -24;
-    static const int MAX_ARTIFICIAL_OFFSET =  24;
-    static const int MAX_TAPPED_OFFSET     =  24;
+    static const qint16 MIN_ARTIFICIAL_OFFSET = -24;
+    static const qint16 MAX_ARTIFICIAL_OFFSET =  24;
+    static const qint16 MAX_TAPPED_OFFSET     =  24;
 
     /*static const int NATURAL_FREQUENCIES[][] = {
         {12, 12}, //AH12 (+12 frets)
@@ -44,11 +44,11 @@ public:
     };*/
 
     // ---API--- //
-    inline TYPE type()       const { return m_type; }
-    inline int  data()       const { return m_data; }
+    inline TYPE    type()       const { return m_type; }
+    inline qint16  data()       const { return m_data; }
 
-    inline void type(const TYPE val) { m_type = val; emit typeChanged(); }
-    inline void data(const int val)  { m_data = val; emit dataChanged(); }
+    inline void type(const TYPE val)   { m_type = val; emit typeChanged(); }
+    inline void data(const qint16 val) { m_data = val; emit dataChanged(); }
 
     inline bool isNatural()   const { return m_type == TYPE_NATURAL; }
     inline bool isArtifical() const { return m_type == TYPE_ARTIFICIAL; }
@@ -61,8 +61,8 @@ signals:
     void dataChanged();
 
 private:
-    TYPE m_type;
-    int  m_data;
+    TYPE   m_type;
+    qint16 m_data;
 };
 
 #endif // CEFFECTHORMONIC_H

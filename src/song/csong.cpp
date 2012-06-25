@@ -47,12 +47,12 @@ CSong &CSong::operator =(const CSong &obj)
     transcriber(obj.transcriber());
     comments(obj.comments());
     channels(obj.channels());
-    for( uint i = 0; i < obj.measureHeadersCount(); i++ )
+    for( quint16 i = 0; i < obj.measureHeadersCount(); i++ )
     {
         measureHeader(i, obj.measureHeader(i));
         m_measureHeaders[i].song(this);
     }
-    for( uint i = 0; i < obj.measureHeadersCount(); i++ )
+    for( quint16 i = 0; i < obj.measureHeadersCount(); i++ )
     {
         track(i, obj.track(i));
         m_tracks[i].song(this);

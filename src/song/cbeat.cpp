@@ -11,7 +11,7 @@ CBeat::CBeat(QObject *parent)
     , p_text(NULL)
     , p_measure(NULL)
 {
-    for( uint i = 0; i < MAX_VOICES; i++)
+    for( quint16 i = 0; i < MAX_VOICES; i++)
         m_voices[i] = CVoice(i);
 }
 
@@ -72,7 +72,7 @@ void CBeat::voices(const QList<CVoice> &val)
         log_warn("Used only first %i from %i voices", MAX_VOICES, val.count());
 }
 
-const CVoice& CBeat::voice(const uint index) const
+const CVoice& CBeat::voice(const quint16 index) const
     throw(Common::CException)
 {
     if( index < MAX_VOICES )
@@ -82,7 +82,7 @@ const CVoice& CBeat::voice(const uint index) const
     throw EXCEPTION("Can't get voice");
 }
 
-void CBeat::voice(const uint index, const CVoice &val)
+void CBeat::voice(const quint16 index, const CVoice &val)
     throw(Common::CException)
 {
     if( index < MAX_VOICES )
@@ -97,7 +97,7 @@ void CBeat::voice(const uint index, const CVoice &val)
     throw EXCEPTION("Can't set voice");
 }
 
-void CBeat::voiceRemove(const uint index)
+void CBeat::voiceRemove(const quint16 index)
     throw(Common::CException)
 {
     if( index < MAX_VOICES )

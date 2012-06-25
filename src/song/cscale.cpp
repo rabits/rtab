@@ -10,6 +10,6 @@ CScale::CScale(QObject *parent)
 void CScale::clear()
 {
     key(0);
-    for(int i = 0; i < 12; i++)
+    for(quint8 i = 0; i < 12; i++)
         note(i, false);
 }

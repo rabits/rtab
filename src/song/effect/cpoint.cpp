@@ -1,6 +1,6 @@
 #include "cpoint.h"
 
-CPoint::CPoint(int position, int value, QObject *parent)
+CPoint::CPoint(quint16 position, qint16 value, QObject *parent)
     : QObject(parent)
     , m_position(position)
     , m_value(value)

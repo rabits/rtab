@@ -97,34 +97,34 @@ protected:
     public:
         CVoiceData(CMeasure &measure);
 
-        inline long             start()    const { return m_start; }
-        inline int              velocity() const { return m_velocity; }
-        inline int              flags()    const { return m_flags; }
+        inline qint64           start()    const { return m_start; }
+        inline qint16           velocity() const { return m_velocity; }
+        inline qint16           flags()    const { return m_flags; }
         inline const CDuration& duration() const { return m_duration; }
 
-        inline void       start(long val)          { m_start = val; }
-        inline void       velocity(int val)        { m_velocity = val; }
-        inline void       flags(int val)           { m_flags = val; }
+        inline void       start(qint64 val)        { m_start = val; }
+        inline void       velocity(qint16 val)     { m_velocity = val; }
+        inline void       flags(qint16 val)        { m_flags = val; }
         inline void       duration(CDuration &val) { m_duration = val; }
 
     private:
-        long      m_start;
-        int       m_velocity;
-        int       m_flags;
+        qint64    m_start;
+        qint16    m_velocity;
+        qint16    m_flags;
         CDuration m_duration;
     };
 
     class CBeatData {
     public:
         CBeatData(CMeasure measure);
-        long       currentStart();
+        qint64     currentStart();
 
     protected:
-        inline uint              voicesCount()    const { return m_voices.count(); }
-        inline const CVoiceData& voice(int index) const { return m_voices[index]; }
+        inline quint16           voicesCount()        const { return m_voices.count(); }
+        inline const CVoiceData& voice(quint16 index) const { return m_voices[index]; }
 
     private:
-        long              m_current_start;
+        qint64            m_current_start;
         QList<CVoiceData> m_voices;
     };
 };

@@ -1,13 +1,13 @@
 #include "cchord.h"
 
-CChord::CChord(int length, QObject *parent)
+CChord::CChord(quint8 length, QObject *parent)
     : QObject(parent)
     , m_firstFret()
     , m_strings()
     , m_name()
     , p_beat(NULL)
 {
-    for( int i = 0; i < length; i++ )
+    for( quint16 i = 0; i < length; i++ )
         m_strings[i] = -1;
 }
 
@@ -24,13 +24,13 @@ CChord &CChord::operator =(const CChord &obj)
 {
     name(obj.name());
     firstFret(obj.firstFret());
-    for( uint i = 0; i < obj.stringsCount(); i++ )
+    for( quint16 i = 0; i < obj.stringsCount(); i++ )
         fret(i, obj.fret(i));
 
     return *this;
 }
 
-int CChord::fret(const uint string) const
+qint8 CChord::fret(const quint8 string) const
 {
     if( string < stringsCount() )
         return m_strings[string];
@@ -39,7 +39,7 @@ int CChord::fret(const uint string) const
     throw EXCEPTION("Can't get fret");
 }
 
-void CChord::fret(const uint string, const int val)
+void CChord::fret(const quint8 string, const qint8 val)
 {
     if( string < stringsCount() )
     {
@@ -52,10 +52,10 @@ void CChord::fret(const uint string, const int val)
     throw EXCEPTION("Can't set fret");
 }
 
-uint CChord::notesCount() const
+quint8 CChord::notesCount() const
 {
-    uint count = 0;
-    foreach(int fret, strings())
+    quint8 count = 0;
+    foreach(qint8 fret, strings())
         if( fret > -1 ) count++;
 
     return count;

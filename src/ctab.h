@@ -32,8 +32,8 @@ public:
     inline const QList<CSong*>& songs()                   { return m_songs; }
     inline void                 songs(QList<CSong*> &val) { m_songs = val; emit songsChanged(); }
 
-    inline uint         songsCount()                 { return m_songs.count(); }
-    inline const CSong* song(uint index)             { return m_songs[index]; }
+    inline quint8       songsCount()                 { return m_songs.count(); }
+    inline const CSong* song(quint8 index)           { return m_songs[index]; }
     inline void         songAdd(CSong *val)          { m_songs.append(val); emit songsChanged(); }
     inline void         songRemove(CSong *val)       { delete val; m_songs.removeOne(val); emit songsChanged(); }
 

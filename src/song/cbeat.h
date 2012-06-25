@@ -15,7 +15,7 @@ class CBeat
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(long          start READ start WRITE start NOTIFY startChanged)
+    Q_PROPERTY(qint64        start READ start WRITE start NOTIFY startChanged)
     Q_PROPERTY(QList<CVoice> voices READ voices WRITE voices NOTIFY voicesChanged)
     Q_PROPERTY(CStroke       stroke READ stroke WRITE stroke NOTIFY strokeChanged)
     Q_PROPERTY(CChord*       chord READ chord WRITE chord NOTIFY chordChanged)
@@ -34,25 +34,25 @@ public:
     static const uint MAX_VOICES = 2;
 
     // ---API--- //
-    inline long                 start()   const { return m_start; }
+    inline qint64               start()   const { return m_start; }
     inline const QList<CVoice>& voices()  const { return m_voices; }
     inline const CStroke&       stroke()  const { return m_stroke; }
     inline CChord*              chord()   const { return p_chord; }
     inline CText*               text()    const { return p_text; }
     inline CMeasure*            measure() const { return p_measure; }
 
-    inline void start(const long val)            { m_start = val; emit startChanged(); }
+    inline void start(const qint64 val)          { m_start = val; emit startChanged(); }
            void voices(const QList<CVoice> &val);
     inline void stroke(const CStroke &val)       { m_stroke = val; emit strokeChanged(); }
            void chord(const CChord *val);
            void text(const CText *val);
     inline void measure(CMeasure *val)           { p_measure = val; emit measureChanged(); }
 
-    inline uint voicesCount()     const { return m_voices.count(); }
-    const CVoice&     voice(const uint index) const throw(Common::CException);
-    void              voice(const uint index, const CVoice &val) throw(Common::CException);
-    void              voiceRemove(const uint index) throw(Common::CException);
-    inline void       voiceRemove(const CVoice &val) { m_voices.removeOne(val); emit voicesChanged(); }
+    inline quint16    voicesCount()              const { return m_voices.count(); }
+    const CVoice&     voice(const quint16 index) const throw(Common::CException);
+    void              voice(const quint16 index, const CVoice &val) throw(Common::CException);
+    void              voiceRemove(const quint16 index) throw(Common::CException);
+    inline void       voiceRemove(const CVoice &val)   { m_voices.removeOne(val); emit voicesChanged(); }
 
     inline bool isChordBeat() const { return chord() != NULL; }
     inline bool isTextBeat()  const { return text() != NULL; }
@@ -67,7 +67,7 @@ signals:
     void measureChanged();
 
 private:
-    long           m_start;
+    qint64         m_start;
     QList<CVoice>  m_voices;
     CStroke        m_stroke;
     CChord        *p_chord;

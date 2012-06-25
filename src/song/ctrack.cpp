@@ -56,7 +56,7 @@ void CTrack::updateSongLinks()
 {
     if( song() != NULL )
     {
-        for( uint i = 0; i < measuresCount(); i++ )
+        for( quint16 i = 0; i < measuresCount(); i++ )
             m_measures[i].header(&(song()->measureHeader(i)));
     }
 }
