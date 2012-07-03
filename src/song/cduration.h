@@ -11,7 +11,7 @@ class CDuration
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(qint16        value READ value WRITE value NOTIFY valueChanged)
+    Q_PROPERTY(qint8         value READ value WRITE value NOTIFY valueChanged)
     Q_PROPERTY(bool          dotted READ dotted WRITE dotted NOTIFY dottedChanged)
     Q_PROPERTY(bool          doubleDotted READ doubleDotted WRITE doubleDotted NOTIFY doubleDottedChanged)
     Q_PROPERTY(CDivisionType divisionType READ divisionType WRITE divisionType NOTIFY divisionTypeChanged)
@@ -42,7 +42,7 @@ public:
     inline bool                 doubleDotted() const { return m_doubleDotted; }
     inline const CDivisionType& divisionType() const { return m_divisionType; }
 
-    inline void value(const qint16 val)                { m_value = val; emit valueChanged(); }
+    inline void value(const qint8 val)                 { m_value = val; emit valueChanged(); }
     inline void dotted(const bool val)                 { m_dotted = val; emit dottedChanged(); }
     inline void doubleDotted(const bool val)           { m_doubleDotted = val; emit doubleDottedChanged(); }
     inline void divisionType(const CDivisionType &val) { m_divisionType = val; emit divisionTypeChanged(); }
@@ -60,7 +60,7 @@ signals:
     void divisionTypeChanged();
 
 private:
-    qint16        m_value;
+    qint8         m_value;
     bool          m_dotted;
     bool          m_doubleDotted;
     CDivisionType m_divisionType;

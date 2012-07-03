@@ -23,6 +23,8 @@ Writed on QT4 with QtQuick interface in QtCreator
  * Tool for view current position of the fingers on the fingerboard
  * Automatical play scrolling
  * Searching tabs in internet
+ * Own format (with supporting repositories and diff (non-binary))
+ * Diff utilities (highlight changes in song)
 
 ### v3.0 - Editor
 

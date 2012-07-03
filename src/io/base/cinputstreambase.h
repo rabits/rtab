@@ -2,8 +2,7 @@
 #define CINPUTSTREAMBASE_H
 
 #include "cfileformat.h"
-
-class CSong;
+#include "../../song/csong.h"
 
 class CInputStreamBase
 {

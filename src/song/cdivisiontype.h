@@ -9,8 +9,8 @@ class CDivisionType
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(qint16 enter READ enter WRITE enter NOTIFY enterChanged)
-    Q_PROPERTY(qint16 time READ time WRITE time NOTIFY timeChanged)
+    Q_PROPERTY(qint8 enter READ enter WRITE enter NOTIFY enterChanged)
+    Q_PROPERTY(qint8 time READ time WRITE time NOTIFY timeChanged)
 
 public:
     explicit CDivisionType(QObject *parent = 0);
@@ -24,11 +24,11 @@ public:
     static const CDivisionType TRIPLET;
 
     // ---API--- //
-    inline qint16 enter() const { return m_enter; }
-    inline qint16 time()  const { return m_time; }
+    inline qint8  enter() const { return m_enter; }
+    inline qint8 time()  const { return m_time; }
 
-    inline void enter(const qint16 val) { m_enter = val; emit enterChanged(); }
-    inline void time(const qint16 val)  { m_time = val; emit timeChanged(); }
+    inline void enter(const qint8 val) { m_enter = val; emit enterChanged(); }
+    inline void time(const qint8 val)  { m_time = val; emit timeChanged(); }
 
     inline qint64 convertTime(qint64 in_time) const { return in_time * time() / enter(); }
 
@@ -37,8 +37,8 @@ signals:
     void timeChanged();
 
 private:
-    qint16 m_enter;
-    qint16 m_time;
+    qint8 m_enter;
+    qint8 m_time;
 };
 
 #endif // CDIVISIONTYPE_H

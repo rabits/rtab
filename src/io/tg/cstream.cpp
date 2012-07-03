@@ -6,7 +6,7 @@ CStream::CStream()
 {
 }
 
-CStream::CBeatData::CBeatData(CMeasure measure)
+CStream::CBeatData::CBeatData(CMeasure &measure)
     : m_current_start(measure.header()->start())
     , m_voices()
 {

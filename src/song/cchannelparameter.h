@@ -13,7 +13,7 @@ class CChannelParameter
     Q_PROPERTY(QString value READ value WRITE value NOTIFY valueChanged)
 
 public:
-    explicit CChannelParameter(QObject *parent = 0);
+    explicit CChannelParameter(QString key, QString value, QObject *parent = 0);
     CChannelParameter(const CChannelParameter &obj);
     CChannelParameter& operator=(const CChannelParameter &obj);
 

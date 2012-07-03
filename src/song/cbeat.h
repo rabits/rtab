@@ -31,7 +31,7 @@ public:
                                                                && stroke() == obj.stroke() && chord() == obj.chord()
                                                                && text() == obj.text(); }
 
-    static const uint MAX_VOICES = 2;
+    static const quint8 MAX_VOICES = 2;
 
     // ---API--- //
     inline qint64               start()   const { return m_start; }

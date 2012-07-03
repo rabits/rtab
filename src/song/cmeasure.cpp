@@ -21,6 +21,16 @@ CMeasure::CMeasure(const CMeasure &obj)
     updateThisLinks();
 }
 
+CMeasure::CMeasure(const CMeasureHeader &obj)
+    : QObject()
+    , m_clef(DEFAULT_CLEF)
+    , m_keySignature(DEFAULT_KEY_SIGNATURE)
+    , m_beats()
+    , p_header(&obj)
+    , p_track(NULL)
+{
+}
+
 CMeasure &CMeasure::operator =(const CMeasure &obj)
 {
     m_beats.clear();

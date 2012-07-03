@@ -20,9 +20,9 @@ class CMeasureHeader
     Q_PROPERTY(CTimeSignature timeSignature READ timeSignature WRITE timeSignature NOTIFY timeSignatureChanged)
     Q_PROPERTY(CTempo         tempo READ tempo WRITE tempo NOTIFY tempoChanged)
     Q_PROPERTY(bool           repeatOpen READ repeatOpen WRITE repeatOpen NOTIFY repeatOpenChanged)
-    Q_PROPERTY(qint16         repeatAlternative READ repeatAlternative WRITE repeatAlternative NOTIFY repeatAlternativeChanged)
+    Q_PROPERTY(qint8          repeatAlternative READ repeatAlternative WRITE repeatAlternative NOTIFY repeatAlternativeChanged)
     Q_PROPERTY(qint16         repeatClose READ repeatClose WRITE repeatClose NOTIFY repeatCloseChanged)
-    Q_PROPERTY(qint16         tripletFeel READ tripletFeel WRITE tripletFeel NOTIFY tripletFeelChanged)
+    Q_PROPERTY(qint8          tripletFeel READ tripletFeel WRITE tripletFeel NOTIFY tripletFeelChanged)
     Q_PROPERTY(CMarker*       marker READ marker WRITE marker NOTIFY markerChanged)
     Q_PROPERTY(CSong*         song READ song WRITE song NOTIFY songChanged)
 
@@ -48,9 +48,9 @@ public:
     inline const CTimeSignature& timeSignature()     const { return m_timeSignature; }
     inline const CTempo&         tempo()             const { return m_tempo; }
     inline bool                  repeatOpen()        const { return m_repeatOpen; }
-    inline qint16                repeatAlternative() const { return m_repeatAlternative; }
+    inline qint8                 repeatAlternative() const { return m_repeatAlternative; }
     inline qint16                repeatClose()       const { return m_repeatClose; }
-    inline qint16                tripletFeel()       const { return m_tripletFeel; }
+    inline qint8                 tripletFeel()       const { return m_tripletFeel; }
     inline CMarker*              marker()            const { return p_marker; }
     inline CSong*                song()              const { return p_song; }
 
@@ -59,15 +59,17 @@ public:
     inline void timeSignature(const CTimeSignature &val) { m_timeSignature = val; emit timeSignatureChanged(); }
     inline void tempo(const CTempo &val)                 { m_tempo = val; emit tempoChanged(); }
     inline void repeatOpen(const bool val)               { m_repeatOpen = val; emit repeatOpenChanged(); }
-    inline void repeatAlternative(const qint16 val)      { m_repeatAlternative = val; emit repeatAlternativeChanged(); }
+    inline void repeatAlternative(const qint8 val)       { m_repeatAlternative = val; emit repeatAlternativeChanged(); }
     inline void repeatClose(const qint16 val)            { m_repeatClose = val; emit repeatCloseChanged(); }
-    inline void tripletFeel(const qint16 val)            { m_tripletFeel = val; emit tripletFeelChanged(); }
+    inline void tripletFeel(const qint8 val)             { m_tripletFeel = val; emit tripletFeelChanged(); }
     inline void marker(const CMarker *val)               { delete p_marker; if( val != NULL ) p_marker = new CMarker(*val); markerCheck(); emit markerChanged(); }
     inline void song(CSong *val)                         { p_song = val; emit songChanged(); }
 
     inline bool markerHas()    const { return p_marker != NULL; }
     inline void markerCheck()  const { if( markerHas() ) p_marker->measure(number()); }
     inline void markerRemove() const { delete p_marker; }
+
+    inline quint64 length()    const { return timeSignature().numerator() * timeSignature().denominator().time(); }
 
 signals:
     void numberChanged();
@@ -87,9 +89,9 @@ private:
     CTimeSignature m_timeSignature;
     CTempo         m_tempo;
     bool           m_repeatOpen;
-    qint16         m_repeatAlternative;
+    qint8          m_repeatAlternative;
     qint16         m_repeatClose;
-    qint16         m_tripletFeel;
+    qint8          m_tripletFeel;
     CMarker       *p_marker;
     CSong         *p_song;
 };

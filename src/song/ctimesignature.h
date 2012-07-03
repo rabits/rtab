@@ -12,7 +12,7 @@ class CTimeSignature
 {
     Q_OBJECT
     Q_PROPERTY(CDuration denominator READ denominator WRITE denominator NOTIFY denominatorChanged)
-    Q_PROPERTY(qint16    numerator READ numerator WRITE numerator NOTIFY numeratorChanged)
+    Q_PROPERTY(qint8     numerator READ numerator WRITE numerator NOTIFY numeratorChanged)
 
 public:
     explicit CTimeSignature(QObject *parent = 0);
@@ -24,10 +24,10 @@ public:
 
     // ---API--- //
     inline const CDuration& denominator() const { return m_denominator; }
-    inline qint16           numerator()   const { return m_numerator; }
+    inline qint8            numerator()   const { return m_numerator; }
 
     inline void denominator(const CDuration &val) { m_denominator = val; emit denominatorChanged(); }
-    inline void numerator(const qint16 &val)      { m_numerator = val; emit numeratorChanged(); }
+    inline void numerator(const qint8 &val)       { m_numerator = val; emit numeratorChanged(); }
 
 signals:
     void denominatorChanged();
@@ -35,7 +35,7 @@ signals:
 
 private:
     CDuration m_denominator;
-    qint16    m_numerator;
+    qint8     m_numerator;
 };
 
 #endif // CTIMESIGNATURE_H

@@ -116,7 +116,7 @@ protected:
 
     class CBeatData {
     public:
-        CBeatData(CMeasure measure);
+        CBeatData(CMeasure &measure);
         qint64     currentStart();
 
     protected:

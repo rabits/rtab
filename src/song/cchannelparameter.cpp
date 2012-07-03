@@ -1,9 +1,9 @@
 #include "cchannelparameter.h"
 
-CChannelParameter::CChannelParameter(QObject *parent)
+CChannelParameter::CChannelParameter(QString key, QString value, QObject *parent)
     : QObject(parent)
-    , m_key()
-    , m_value()
+    , m_key(key)
+    , m_value(value)
 {
 }
 

@@ -20,11 +20,31 @@ public:
     CSong*             readSong();
 
 private:
-    inline void readVersion() { if( m_version.isEmpty() ) m_version = readUnsignedByteString(); }
+    inline void readVersion();
     CSong*      read();
 
-    QString readUnsignedByteString();
+    void readChannel(CChannel &channel);
+    void readChannelParameters(CChannel &channel);
+    void readChannelParameter(CChannel &channel);
+    CMeasureHeader readMeasureHeader(CMeasureHeader &measure_header, qint32 number, qint64 start, const CMeasureHeader *last_header);
+    void readTempo(CTempo &tempo);
+    void readMarker(qint32 number, CMarker &marker);
+    qint32 readHeader();
+    void readTimeSignature(CTimeSignature &time_signature);
+    void readDuration(CDuration &duration);
+    void readDivisionType(CDivisionType &division);
+    qint32 readHeader(qint32 count);
+    void readTrack(qint8 number, CSong *song, CTrack &track);
+    CMeasure readMeasure(const CMeasureHeader &measure_header, const CMeasure *last_measure);
+    void readBeats(CMeasure &measure, CBeatData &data);
+    void readBeat(quint32 header, CMeasure &measure, CBeatData &data);
+    void readVoices(quint32 header, CBeat &beat, CBeatData &data);
+
     qint8   readByte();
+    qint16  readShort();
+
+    QString readUnsignedByteString();
+    QString readIntegerString();
     QString readString(quint64 length);
 
     QDataStream *m_data_stream;

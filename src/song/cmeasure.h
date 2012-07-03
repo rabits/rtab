@@ -23,6 +23,7 @@ class CMeasure
 public:
     explicit CMeasure(CMeasureHeader *header, QObject *parent = 0);
     CMeasure(const CMeasure &obj);
+    CMeasure(const CMeasureHeader &obj);
     CMeasure& operator=(const CMeasure &obj);
 
     inline bool operator==(const CMeasure &obj) const { return clef() == obj.clef() && keySignature() == obj.keySignature()
