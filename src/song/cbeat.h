@@ -37,6 +37,7 @@ public:
     inline qint64               start()   const { return m_start; }
     inline const QList<CVoice>& voices()  const { return m_voices; }
     inline const CStroke&       stroke()  const { return m_stroke; }
+    inline CStroke&             stroke()        { return m_stroke; }
     inline CChord*              chord()   const { return p_chord; }
     inline CText*               text()    const { return p_text; }
     inline CMeasure*            measure() const { return p_measure; }
@@ -48,11 +49,12 @@ public:
            void text(const CText *val);
     inline void measure(CMeasure *val)           { p_measure = val; emit measureChanged(); }
 
-    inline quint16    voicesCount()              const { return m_voices.count(); }
-    const CVoice&     voice(const quint16 index) const throw(Common::CException);
-    void              voice(const quint16 index, const CVoice &val) throw(Common::CException);
-    void              voiceRemove(const quint16 index) throw(Common::CException);
-    inline void       voiceRemove(const CVoice &val)   { m_voices.removeOne(val); emit voicesChanged(); }
+    inline quint16 voicesCount()              const { return m_voices.count(); }
+    const CVoice&  voice(const quint16 index) const throw(Common::CException);
+    CVoice&        voice(const quint16 index) throw(Common::CException);
+    void           voice(const quint16 index, const CVoice &val) throw(Common::CException);
+    void           voiceRemove(const quint16 index) throw(Common::CException);
+    inline void    voiceRemove(const CVoice &val)   { m_voices.removeOne(val); emit voicesChanged(); }
 
     inline bool isChordBeat() const { return chord() != NULL; }
     inline bool isTextBeat()  const { return text() != NULL; }

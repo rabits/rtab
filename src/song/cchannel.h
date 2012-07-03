@@ -74,6 +74,7 @@ public:
 
     inline quint16                  parametersCount()                                      const { return m_parameters.count(); }
     inline const CChannelParameter& parameter(const quint16 index)                         const { return m_parameters[index]; }
+    inline CChannelParameter&       parameter(const quint16 index)                               { return m_parameters[index]; }
     inline void                     parameter(const quint16 index, const CChannelParameter &val) { m_parameters[index] = val; emit parametersChanged(); }
     inline void                     parameterAdd(const CChannelParameter &val)                   { m_parameters.append(val); emit parametersChanged(); }
     inline void                     parameterRemove(const quint16 index)                         { m_parameters.removeAt(index); emit parametersChanged(); }

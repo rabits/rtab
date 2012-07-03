@@ -24,6 +24,7 @@ public:
 
     // ---API--- //
     inline const CDuration& denominator() const { return m_denominator; }
+    inline CDuration&       denominator()       { return m_denominator; }
     inline qint8            numerator()   const { return m_numerator; }
 
     inline void denominator(const CDuration &val) { m_denominator = val; emit denominatorChanged(); }

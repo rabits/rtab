@@ -20,6 +20,7 @@ public:
     // ---API--- //
     inline quint16          fret()     const { return m_fret; }
     inline const CDuration& duration() const { return m_duration; }
+    inline CDuration&       duration()       { return m_duration; }
 
     inline void fret(const quint16 val)        { m_fret = val; emit fretChanged(); }
     inline void duration(const CDuration &val) { m_duration = val; emit durationChanged(); }

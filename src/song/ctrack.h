@@ -52,6 +52,7 @@ public:
     inline const QList<CString>&  strings()   const { return m_strings; }
     inline const QColor&          color()     const { return m_color; }
     inline const CLyrics&         lyrics()    const { return m_lyrics; }
+    inline CLyrics&               lyrics()          { return m_lyrics; }
     inline CSong*                 song()      const { return p_song; }
 
     inline void number(const quint16 &val)           { m_number = val; emit numberChanged(); }
@@ -67,15 +68,17 @@ public:
     inline void song(CSong *val)                     { p_song = val; updateSongLinks(); emit songChanged(); }
 
 
-    inline quint16            measuresCount()                          const { return m_measures.count(); }
+    inline quint16         measuresCount()                             const { return m_measures.count(); }
     inline const CMeasure& measure(const quint16 index)                const { return m_measures[index]; }
+    inline CMeasure&       measure(const quint16 index)                      { return m_measures[index]; }
     inline void            measure(const quint16 index, const CMeasure &val) { m_measures[index] = val; m_measures[index].track(this); emit measuresChanged(); }
     inline void            measureAdd(const CMeasure &val)                   { m_measures.append(val); m_measures.last().track(this); emit measuresChanged(); }
     inline void            measureRemove(const quint16 index)                { m_measures.removeAt(index); emit measuresChanged(); }
     inline void            measureRemove(const CMeasure &val)                { m_measures.removeOne(val); emit measuresChanged(); }
 
-    inline quint8           stringsCount()                         const { return m_strings.count(); }
+    inline quint8         stringsCount()                           const { return m_strings.count(); }
     inline const CString& string(const quint8 index)               const { return m_strings[index-1]; }
+    inline CString&       string(const quint8 index)                     { return m_strings[index-1]; }
     inline void           string(const quint8 index, const CString &val) { m_strings[index-1] = val; emit stringsChanged(); }
     inline void           stringAdd(const CString &val)                  { m_strings.append(val); emit stringsChanged(); }
     inline void           stringRemove(const quint8 index)               { m_strings.removeAt(index); emit stringsChanged(); }

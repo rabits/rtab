@@ -14,16 +14,16 @@ class CMeasure
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(CLEF                  clef READ clef WRITE clef NOTIFY clefChanged)
-    Q_PROPERTY(qint16                keySignature READ keySignature WRITE keySignature NOTIFY keySignatureChanged)
-    Q_PROPERTY(QList<CBeat>          beats READ beats WRITE beats NOTIFY beatsChanged)
-    Q_PROPERTY(const CMeasureHeader* header READ header WRITE header NOTIFY headerChanged)
-    Q_PROPERTY(CTrack*               track READ track WRITE track NOTIFY trackChanged)
+    Q_PROPERTY(CLEF            clef READ clef WRITE clef NOTIFY clefChanged)
+    Q_PROPERTY(qint16          keySignature READ keySignature WRITE keySignature NOTIFY keySignatureChanged)
+    Q_PROPERTY(QList<CBeat>    beats READ beats WRITE beats NOTIFY beatsChanged)
+    Q_PROPERTY(CMeasureHeader* header READ header WRITE header NOTIFY headerChanged)
+    Q_PROPERTY(CTrack*         track READ track WRITE track NOTIFY trackChanged)
 
 public:
     explicit CMeasure(CMeasureHeader *header, QObject *parent = 0);
     CMeasure(const CMeasure &obj);
-    CMeasure(const CMeasureHeader &obj);
+    CMeasure(CMeasureHeader &obj);
     CMeasure& operator=(const CMeasure &obj);
 
     inline bool operator==(const CMeasure &obj) const { return clef() == obj.clef() && keySignature() == obj.keySignature()
@@ -40,20 +40,22 @@ public:
     static const qint16 DEFAULT_KEY_SIGNATURE = 0;
 
     // ---API--- //
-    inline CLEF                  clef()         const { return m_clef; }
-    inline qint16                keySignature() const { return m_keySignature; }
-    inline const QList<CBeat>&   beats()        const { return m_beats; }
-    inline const CMeasureHeader* header()       const { return p_header; }
-    inline CTrack*               track()        const { return p_track; }
+    inline CLEF                clef()         const { return m_clef; }
+    inline qint16              keySignature() const { return m_keySignature; }
+    inline const QList<CBeat>& beats()        const { return m_beats; }
+    inline CMeasureHeader*     header()       const { return p_header; }
+    inline CMeasureHeader*     header()             { return p_header; }
+    inline CTrack*             track()        const { return p_track; }
 
-    inline void clef(const CLEF val)              { m_clef = val; emit clefChanged(); }
-    inline void keySignature(const qint16 val)    { m_keySignature = val; emit keySignatureChanged(); }
-    inline void beats(const QList<CBeat> &val)    { m_beats = val; emit beatsChanged(); }
-    inline void header(const CMeasureHeader *val) { p_header = val; emit headerChanged(); }
-    inline void track(CTrack *val)                { p_track = val; emit trackChanged(); }
+    inline void clef(const CLEF val)           { m_clef = val; emit clefChanged(); }
+    inline void keySignature(const qint16 val) { m_keySignature = val; emit keySignatureChanged(); }
+    inline void beats(const QList<CBeat> &val) { m_beats = val; emit beatsChanged(); }
+    inline void header(CMeasureHeader *val)    { p_header = val; emit headerChanged(); }
+    inline void track(CTrack *val)             { p_track = val; emit trackChanged(); }
 
     inline quint16      beatsCount()                          const { return m_beats.count(); }
     inline const CBeat& beat(const quint16 index)             const { return m_beats[index]; }
+    inline CBeat&       beat(const quint16 index)                   { return m_beats[index]; }
     inline void         beat(const quint16 index, const CBeat &val) { m_beats[index] = val; m_beats[index].measure(this); emit beatsChanged(); }
     inline void         beatAdd(const CBeat &val)                   { m_beats.append(val); m_beats.last().measure(this); emit beatsChanged(); }
     inline void         beatRemove(const quint16 index)             { m_beats.removeAt(index); emit beatsChanged(); }
@@ -69,11 +71,11 @@ signals:
 private:
     void updateThisLinks();
 
-    CLEF                  m_clef;
-    qint16                m_keySignature;
-    QList<CBeat>          m_beats;
-    const CMeasureHeader *p_header;
-    CTrack               *p_track;
+    CLEF            m_clef;
+    qint16          m_keySignature;
+    QList<CBeat>    m_beats;
+    CMeasureHeader *p_header;
+    CTrack         *p_track;
 };
 
 #endif // CMEASURE_H

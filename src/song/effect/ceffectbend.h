@@ -34,6 +34,7 @@ public:
 
     inline quint16           pointsCount()                           const { return m_points.count(); }
     inline const CPointBend& point(const quint16 index)              const { return m_points[index]; }
+    inline CPointBend&       point(const quint16 index)                    { return m_points[index]; }
     inline void              pointAdd(const quint16 pos, const qint16 val) { m_points.append(CPointBend(pos, val)); emit pointsChanged(); }
     inline void              pointRemove(const quint16 index)              { m_points.removeAt(index); emit pointsChanged(); }
     inline void              pointRemove(const CPointBend &val)            { m_points.removeOne(val); emit pointsChanged(); }

@@ -35,7 +35,7 @@ private:
     void readDivisionType(CDivisionType &division);
     qint32 readHeader(qint32 count);
     void readTrack(qint8 number, CSong *song, CTrack &track);
-    CMeasure readMeasure(const CMeasureHeader &measure_header, const CMeasure *last_measure);
+    CMeasure readMeasure(CMeasureHeader &measure_header, CMeasure *last_measure);
     void readBeats(CMeasure &measure, CBeatData &data);
     void readBeat(quint32 header, CMeasure &measure, CBeatData &data);
     void readVoices(quint32 header, CBeat &beat, CBeatData &data);

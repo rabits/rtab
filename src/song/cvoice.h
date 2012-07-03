@@ -38,6 +38,7 @@ public:
 
     // ---API--- //
     inline const CDuration&    duration()  const { return m_duration; }
+    inline CDuration&          duration()        { return m_duration; }
     inline const QList<CNote>& notes()     const { return m_notes; }
     inline quint8              index()     const { return m_index; }
     inline qint16              direction() const { return m_direction; }
@@ -51,12 +52,13 @@ public:
     inline void empty(const bool val)          { m_empty = val; emit emptyChanged(); }
     inline void beat(CBeat *val)               { p_beat = val; emit beatChanged(); }
 
-    inline quint16       notesCount()                          const { return m_notes.count(); }
-    inline const CNote&  note(const quint16 index)             const { return m_notes[index]; }
-    inline void          note(const quint16 index, const CNote &val) { m_notes[index] = val; m_notes[index].voice(this); empty(false); emit notesChanged(); }
-    inline void          noteAdd(const CNote &val)                   { m_notes.append(val); m_notes.last().voice(this); empty(false); emit notesChanged(); }
-    inline void          noteRemove(const quint16 index)             { m_notes.removeAt(index); emit notesChanged(); }
-    inline void          noteRemove(const CNote &val)                { m_notes.removeOne(val); emit notesChanged(); }
+    inline quint16      notesCount()                          const { return m_notes.count(); }
+    inline const CNote& note(const quint16 index)             const { return m_notes[index]; }
+    inline CNote&       note(const quint16 index)                   { return m_notes[index]; }
+    inline void         note(const quint16 index, const CNote &val) { m_notes[index] = val; m_notes[index].voice(this); empty(false); emit notesChanged(); }
+    inline void         noteAdd(const CNote &val)                   { m_notes.append(val); m_notes.last().voice(this); empty(false); emit notesChanged(); }
+    inline void         noteRemove(const quint16 index)             { m_notes.removeAt(index); emit notesChanged(); }
+    inline void         noteRemove(const CNote &val)                { m_notes.removeOne(val); emit notesChanged(); }
 
     inline bool isRest() const { return notes().isEmpty(); }
 

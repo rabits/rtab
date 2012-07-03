@@ -21,7 +21,7 @@ CMeasure::CMeasure(const CMeasure &obj)
     updateThisLinks();
 }
 
-CMeasure::CMeasure(const CMeasureHeader &obj)
+CMeasure::CMeasure(CMeasureHeader &obj)
     : QObject()
     , m_clef(DEFAULT_CLEF)
     , m_keySignature(DEFAULT_KEY_SIGNATURE)

@@ -237,7 +237,7 @@ void CInputStream::readTrack(qint8 number, CSong *song, CTrack &track)
 
     log_debug("Reading measure headers");
     quint16 measure_count = song->measureHeadersCount();
-    const CMeasure *last_measure = NULL;
+    CMeasure *last_measure = NULL;
     for(quint16 i = 0; i < measure_count; i++)
     {
         track.measureAdd(readMeasure(song->measureHeader(i), last_measure));
@@ -265,7 +265,7 @@ void CInputStream::readTrack(qint8 number, CSong *song, CTrack &track)
     }*/
 }
 
-CMeasure CInputStream::readMeasure(const CMeasureHeader &measure_header, const CMeasure *last_measure)
+CMeasure CInputStream::readMeasure(CMeasureHeader &measure_header, CMeasure *last_measure)
 {
     qint32 header = readHeader();
     CMeasure measure(measure_header);

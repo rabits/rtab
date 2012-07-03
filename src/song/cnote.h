@@ -35,6 +35,7 @@ public:
     inline qint16             string()   const { return m_string; }
     inline bool               tied()     const { return m_tied; }
     inline const CNoteEffect& effect()   const { return m_effect; }
+    inline CNoteEffect&       effect()         { return m_effect; }
     inline CVoice*            voice()    const { return p_voice; }
 
     inline void value(const qint16 val)        { m_value = val; emit valueChanged(); }

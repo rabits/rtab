@@ -41,6 +41,7 @@ public:
     inline bool                 dotted()       const { return m_dotted; }
     inline bool                 doubleDotted() const { return m_doubleDotted; }
     inline const CDivisionType& divisionType() const { return m_divisionType; }
+    inline CDivisionType&       divisionType()       { return m_divisionType; }
 
     inline void value(const qint8 val)                 { m_value = val; emit valueChanged(); }
     inline void dotted(const bool val)                 { m_dotted = val; emit dottedChanged(); }

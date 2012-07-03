@@ -61,6 +61,7 @@ public:
 
     inline quint8        tracksCount()                          const { return m_tracks.count(); }
     inline const CTrack& track(const quint8 index)              const { return m_tracks[index]; }
+    inline CTrack&       track(const quint8 index)                    { return m_tracks[index]; }
     inline void          track(const quint8 index, const CTrack &val) { m_tracks[index] = val; m_tracks[index].song(this); emit tracksChanged(); }
     inline void          trackAdd(const CTrack &val)                  { m_tracks.append(val); m_tracks.last().song(this); emit tracksChanged(); }
     inline void          trackRemove(const quint8 index)              { m_tracks.removeAt(index); emit tracksChanged(); }
@@ -68,6 +69,7 @@ public:
 
     inline quint16               measureHeadersCount()                                   const { return m_measureHeaders.count(); }
     inline const CMeasureHeader& measureHeader(const quint16 index)                      const { return m_measureHeaders[index]; }
+    inline CMeasureHeader&       measureHeader(const quint16 index)                            { return m_measureHeaders[index]; }
     inline void                  measureHeader(const quint16 index, const CMeasureHeader &val) { m_measureHeaders[index] = val; m_measureHeaders[index].song(this); emit measureHeadersChanged(); }
     inline void                  measureHeaderAdd(const CMeasureHeader &val)                   { m_measureHeaders.append(val); m_measureHeaders.last().song(this); emit measureHeadersChanged(); }
     inline void                  measureHeaderRemove(const quint16 index)                      { m_measureHeaders.removeAt(index); emit measureHeadersChanged(); }
@@ -75,6 +77,7 @@ public:
 
     inline quint8          channelsCount()                            const { return m_channels.count(); }
     inline const CChannel& channel(const quint8 index)                const { return m_channels[index]; }
+    inline CChannel&       channel(const quint8 index)                      { return m_channels[index]; }
     inline void            channel(const quint8 index, const CChannel &val) { m_channels[index] = val; emit channelsChanged(); }
     inline void            channelAdd(const CChannel &val)                  { m_channels.append(val); emit channelsChanged(); }
     inline void            channelRemove(const quint8 index)                { m_channels.removeAt(index); emit channelsChanged(); }

@@ -18,6 +18,7 @@ public:
 
     // ---API--- //
     inline const CDuration& duration()       const { return m_duration; }
+    inline CDuration&       duration()             { return m_duration; }
 
     inline void duration(const CDuration &val) { m_duration = val; emit durationChanged(); }
 

@@ -82,6 +82,16 @@ const CVoice& CBeat::voice(const quint16 index) const
     throw EXCEPTION("Can't get voice");
 }
 
+CVoice& CBeat::voice(const quint16 index)
+    throw(Common::CException)
+{
+    if( index < MAX_VOICES )
+        return m_voices[index];
+
+    log_error("Can't get voice %i, it not allow by MAX_VOICES %i", index, MAX_VOICES);
+    throw EXCEPTION("Can't get voice");
+}
+
 void CBeat::voice(const quint16 index, const CVoice &val)
     throw(Common::CException)
 {

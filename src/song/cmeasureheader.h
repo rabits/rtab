@@ -46,7 +46,9 @@ public:
     inline qint16                number()            const { return m_number; }
     inline qint64                start()             const { return m_start; }
     inline const CTimeSignature& timeSignature()     const { return m_timeSignature; }
+    inline CTimeSignature&       timeSignature()           { return m_timeSignature; }
     inline const CTempo&         tempo()             const { return m_tempo; }
+    inline CTempo&               tempo()                   { return m_tempo; }
     inline bool                  repeatOpen()        const { return m_repeatOpen; }
     inline qint8                 repeatAlternative() const { return m_repeatAlternative; }
     inline qint16                repeatClose()       const { return m_repeatClose; }

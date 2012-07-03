@@ -101,6 +101,7 @@ protected:
         inline qint16           velocity() const { return m_velocity; }
         inline qint16           flags()    const { return m_flags; }
         inline const CDuration& duration() const { return m_duration; }
+        inline CDuration&       duration()       { return m_duration; }
 
         inline void       start(qint64 val)        { m_start = val; }
         inline void       velocity(qint16 val)     { m_velocity = val; }
@@ -122,6 +123,7 @@ protected:
     protected:
         inline quint16           voicesCount()        const { return m_voices.count(); }
         inline const CVoiceData& voice(quint16 index) const { return m_voices[index]; }
+        inline       CVoiceData& voice(quint16 index)       { return m_voices[index]; }
 
     private:
         qint64            m_current_start;
