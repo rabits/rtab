@@ -2,15 +2,19 @@
 
 #include "../tg/cinputstream.h"
 #include "../tg/coutputstream.h"
+#include "../tg/v12/cinputstreamtg12.h"
 
 CFileMgr* CFileMgr::sp_instance = NULL;
 
 CFileMgr::CFileMgr()
     : QObject()
 {
-    // Init input and output streams
+    // Init input and output streams TG current
     inputStreamAdd((CInputStreamBase*) new CInputStream());
     outputStreamAdd((COutputStreamBase*) new COutputStream());
+
+    // Init input stream TG 1.2
+    inputStreamAdd((CInputStreamBase*) new CInputStreamTG12());
 }
 
 CFileMgr::~CFileMgr()
@@ -32,7 +36,7 @@ CSong* CFileMgr::load(QDataStream *stream) const
     for( quint16 i = 0; i < inputStreamCount(); i++)
     {
         CInputStreamBase *reader = m_input_streams.at(i);
-        log_debug("Processing loader: %s", reader->getFileFormat().name().toStdString().c_str());
+        log_debug("Processing loader: %1", reader->getFileFormat().name());
         reader->init(stream);
         if( reader->isSupportedVersion() )
             return reader->readSong();
@@ -40,7 +44,7 @@ CSong* CFileMgr::load(QDataStream *stream) const
     }
     stream->device()->close();
 
-    throw EXCEPTION(log_error("Unknown load stream exception"));
+    throw EXCEPTION(log_error("Unknown file format or version"));
 }
 
 void CFileMgr::write(QDataStream *stream, CSong &song) const

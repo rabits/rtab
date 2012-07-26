@@ -10,7 +10,7 @@ using namespace Common;
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
-    log_notice("Init rTab v%s", PROJECT_VERSION);
+    log_notice("Init rTab v%1", PROJECT_VERSION);
 
     QCoreApplication::setOrganizationName("Rabits");
     QCoreApplication::setOrganizationDomain("rabits.ru");
@@ -30,13 +30,14 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
         log_notice("Init done, starting");
 
-        CTab::i()->songOpen("/home/psa/Projects/rtab/tmp/Untitled.tg");
+        CTab::i()->songOpen("/home/psa/Projects/rtab/tmp/test02.tg");
+        CTab::i()->songOpen("/home/psa/Projects/rtab/tmp/test03.tg");
 
         viewer.showExpanded();
         return app->exec();
     }
     catch( Common::CException const &e ) {
-        log_emerg("An unhandled exception has occured: %s", e.what());
+        log_emerg("An unhandled exception has occured: %1", e.what());
     }
     catch(...) {
         log_emerg("An unknown exception has occured!");

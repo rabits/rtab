@@ -1,22 +1,22 @@
-#include "cinputstream.h"
+#include "cinputstreamtg12.h"
 
 #include <QTextStream>
 #include <QDebug>
 
-#include "../../song/csong.h"
+#include "../../../song/csong.h"
 
-CInputStream::CInputStream()
-    : CStream()
+CInputStreamTG12::CInputStreamTG12()
+    : CStreamTG12()
     , CInputStreamBase()
 {
 }
 
-CInputStream::~CInputStream()
+CInputStreamTG12::~CInputStreamTG12()
 {
     delete m_data_stream;
 }
 
-void CInputStream::init(QDataStream *stream)
+void CInputStreamTG12::init(QDataStream *stream)
 {
     log_info("Initializing stream");
     m_data_stream = stream;
@@ -24,7 +24,7 @@ void CInputStream::init(QDataStream *stream)
     m_version.clear();
 }
 
-bool CInputStream::isSupportedVersion()
+bool CInputStreamTG12::isSupportedVersion()
 {
     try {
         readVersion();
@@ -35,7 +35,7 @@ bool CInputStream::isSupportedVersion()
     }
 }
 
-CSong* CInputStream::readSong()
+CSong* CInputStreamTG12::readSong()
 {
     log_info("Song reading");
 
@@ -48,7 +48,7 @@ CSong* CInputStream::readSong()
     throw EXCEPTION("Unsupported file version");
 }
 
-void CInputStream::readVersion()
+void CInputStreamTG12::readVersion()
 {
     if( m_version.isEmpty() )
     {
@@ -57,7 +57,7 @@ void CInputStream::readVersion()
     }
 }
 
-CSong* CInputStream::read()
+CSong* CInputStreamTG12::read()
 {
     CSong* song = new CSong();
 
@@ -79,16 +79,6 @@ CSong* CInputStream::read()
     song->transcriber(readUByteString());
     log_debug("Reading comments");
     song->comments(readIntegerString());
-
-    log_debug("Reading channels");
-    qint8 channel_count = readByte();
-    for(qint8 i = 0; i < channel_count; i++)
-    {
-        log_debug("  channel %i", i);
-        CChannel channel;
-        readChannel(channel);
-        song->channelAdd(channel);
-    }
 
     log_debug("Reading measure headers");
     qint16 header_count = readShort();
@@ -115,12 +105,24 @@ CSong* CInputStream::read()
     return song;
 }
 
-void CInputStream::readChannel(CChannel& channel)
+void CInputStreamTG12::readChannel(CSong *song, CTrack &track)
 {
-    log_debug("Reading channel id");
-    channel.id(readShort());
+    log_debug("Reading channel");
+
+    CChannel channel;
+    CChannelParameter gmChannel1Param;
+    CChannelParameter gmChannel2Param;
+
+    quint8 channel1 = readUByte();
+    gmChannel1Param.key("1"); // TODO: get info
+    gmChannel1Param.value(QString::number(channel1));
+
+    quint8 channel2 = readUByte();
+    gmChannel2Param.key("2"); // TODO: get info
+    gmChannel2Param.value(QString::number(channel2));
+
     log_debug("Reading bank");
-    channel.bank(readUByte());
+    channel.bank( channel1 == 9 ? 128 : CChannel::DEFAULT_BANK);
     log_debug("Reading program");
     channel.program(readUByte());
     log_debug("Reading volume");
@@ -135,31 +137,35 @@ void CInputStream::readChannel(CChannel& channel)
     channel.phaser(readUByte());
     log_debug("Reading tremolo");
     channel.tremolo(readUByte());
-    log_debug("Reading name");
-    channel.name(readUByteString());
 
-    readChannelParameters(channel);
-}
-
-void CInputStream::readChannelParameters(CChannel &channel)
-{
-    log_debug("Reading channel parameters");
-    qint16 count = readShort();
-
-    for( qint16 i = 0; i < count; i++ )
+    for( quint8 i = 0; i < song->channelsCount(); i++ )
     {
-        log_debug("Reading channel parameter %i", i);
-        readChannelParameter(channel);
+        CChannel channel_aux = song->channel(i);
+        for( int n = 0; n < channel_aux.parametersCount(); n++ )
+        {
+            CChannelParameter channel_parameter = channel_aux.parameter(n);
+            if( channel_parameter.key() == "1" )
+            {
+                if( QString(channel1) == channel_parameter.value() )
+                    channel.id(channel_aux.id());
+            }
+        }
     }
+
+    if( channel.id() <= 0 )
+    {
+        channel.id(song->channelsCount() + 1);
+        channel.name("#" + QString::number(channel.id()));
+        channel.parameterAdd(gmChannel1Param);
+        channel.parameterAdd(gmChannel2Param);
+        song->channelAdd(channel);
+    }
+
+    track.channelId(channel.id());
 }
 
-void CInputStream::readChannelParameter(CChannel &channel)
-{
-    CChannelParameter parameter(readUByteString(), readIntegerString());
-    channel.parameterAdd(parameter);
-}
 
-void CInputStream::readMeasureHeader(CMeasureHeader &measure_header, qint32 number, qint64 start, const CMeasureHeader *last_header)
+void CInputStreamTG12::readMeasureHeader(CMeasureHeader &measure_header, qint32 number, qint64 start, const CMeasureHeader *last_header)
 {
     log_debug("Reading measure header #%i", number);
     quint8 header = readUByte();
@@ -216,13 +222,13 @@ void CInputStream::readMeasureHeader(CMeasureHeader &measure_header, qint32 numb
         measure_header.tripletFeel( (last_header != NULL) ? last_header->tripletFeel() : CMeasureHeader::TRIPLET_FEEL_NONE );
 }
 
-void CInputStream::readTempo(CTempo &tempo)
+void CInputStreamTG12::readTempo(CTempo &tempo)
 {
     log_debug("Reading tempo");
     tempo.value(readShort());
 }
 
-void CInputStream::readTrack(qint8 number, CSong *song, CTrack &track)
+void CInputStreamTG12::readTrack(qint8 number, CSong *song, CTrack &track)
 {
     log_debug("Reading track %i", number);
 
@@ -234,8 +240,9 @@ void CInputStream::readTrack(qint8 number, CSong *song, CTrack &track)
     track.name(readUByteString());
     track.solo((header & TRACK_SOLO) != 0);
     track.mute((header & TRACK_MUTE) != 0);
+
     log_debug("Reading track channel");
-    track.channelId(readShort());
+    readChannel(song, track);
 
     log_debug("Reading track measures");
     quint16 measure_count = song->measureHeadersCount();
@@ -261,7 +268,7 @@ void CInputStream::readTrack(qint8 number, CSong *song, CTrack &track)
         track.lyrics(readLyrics());
 }
 
-CMeasure CInputStream::readMeasure(CMeasureHeader &measure_header, CMeasure *last_measure)
+CMeasure CInputStreamTG12::readMeasure(CMeasureHeader &measure_header, CMeasure *last_measure)
 {
     log_debug("Read measure");
     CMeasure measure(measure_header);
@@ -285,7 +292,7 @@ CMeasure CInputStream::readMeasure(CMeasureHeader &measure_header, CMeasure *las
     return measure;
 }
 
-void CInputStream::readBeats(CMeasure &measure, CStream::CBeatData &data)
+void CInputStreamTG12::readBeats(CMeasure &measure, CStreamTG12::CBeatData &data)
 {
     log_debug("Reading beats");
     quint8 header = BEAT_HAS_NEXT;
@@ -298,7 +305,7 @@ void CInputStream::readBeats(CMeasure &measure, CStream::CBeatData &data)
     while( (header & BEAT_HAS_NEXT) != 0 );
 }
 
-void CInputStream::readBeat(quint8 header, CMeasure &measure, CStream::CBeatData &data)
+void CInputStreamTG12::readBeat(quint8 header, CMeasure &measure, CStreamTG12::CBeatData &data)
 {
     log_debug("Reading beat");
     CBeat beat;
@@ -319,7 +326,7 @@ void CInputStream::readBeat(quint8 header, CMeasure &measure, CStream::CBeatData
     measure.beatAdd(beat);
 }
 
-void CInputStream::readVoices(quint8 header, CBeat &beat, CStream::CBeatData &data)
+void CInputStreamTG12::readVoices(quint8 header, CBeat &beat, CStreamTG12::CBeatData &data)
 {
     log_debug("Reading voices");
     for( quint8 i = 0 ; i < CBeat::MAX_VOICES; i++ )
@@ -357,7 +364,7 @@ void CInputStream::readVoices(quint8 header, CBeat &beat, CStream::CBeatData &da
     }
 }
 
-void CInputStream::readTimeSignature(CTimeSignature &time_signature)
+void CInputStreamTG12::readTimeSignature(CTimeSignature &time_signature)
 {
     log_debug("Reading numerator");
     time_signature.numerator(readByte());
@@ -368,7 +375,7 @@ void CInputStream::readTimeSignature(CTimeSignature &time_signature)
     time_signature.denominator(duration);
 }
 
-void CInputStream::readDuration(CDuration &duration)
+void CInputStreamTG12::readDuration(CDuration &duration)
 {
     log_debug("Reading duration");
     quint8 header = readUByte();
@@ -393,7 +400,7 @@ void CInputStream::readDuration(CDuration &duration)
         duration.divisionType(CDivisionType::NORMAL);
 }
 
-void CInputStream::readDivisionType(CDivisionType &division)
+void CInputStreamTG12::readDivisionType(CDivisionType &division)
 {
     log_debug("Reading enter");
     division.enter(readByte());
@@ -402,7 +409,7 @@ void CInputStream::readDivisionType(CDivisionType &division)
     division.time(readByte());
 }
 
-quint8 CInputStream::readUByte()
+quint8 CInputStreamTG12::readUByte()
 {
     quint8 data;
     (*m_data_stream) >> data;
@@ -410,7 +417,7 @@ quint8 CInputStream::readUByte()
     return data;
 }
 
-qint32 CInputStream::readUByte(qint32 count)
+qint32 CInputStreamTG12::readUByte(qint32 count)
 {
     qint32 header = 0;
     for(qint32 i = count; i > 0; i--)
@@ -419,7 +426,7 @@ qint32 CInputStream::readUByte(qint32 count)
     return header;
 }
 
-qint8 CInputStream::readByte()
+qint8 CInputStreamTG12::readByte()
 {
     qint8 data;
     (*m_data_stream) >> data;
@@ -427,7 +434,7 @@ qint8 CInputStream::readByte()
     return data;
 }
 
-qint16 CInputStream::readShort()
+qint16 CInputStreamTG12::readShort()
 {
     qint16 data;
     (*m_data_stream) >> data;
@@ -435,7 +442,7 @@ qint16 CInputStream::readShort()
     return data;
 }
 
-QString CInputStream::readUByteString()
+QString CInputStreamTG12::readUByteString()
 {
     quint8 data;
     (*m_data_stream) >> data;
@@ -444,7 +451,7 @@ QString CInputStream::readUByteString()
     return data > 0 ? readString(data) : "";
 }
 
-QString CInputStream::readIntegerString()
+QString CInputStreamTG12::readIntegerString()
 {
     quint32 data;
     (*m_data_stream) >> data;
@@ -453,7 +460,7 @@ QString CInputStream::readIntegerString()
     return data > 0 ? readString(data) : "";
 }
 
-QString CInputStream::readString(quint64 length)
+QString CInputStreamTG12::readString(quint64 length)
 {
     QTextStream stream(m_data_stream->device());
     quint64 lastpos = m_data_stream->device()->pos();
@@ -466,7 +473,7 @@ QString CInputStream::readString(quint64 length)
     return out;
 }
 
-void CInputStream::readMarker(qint16 measure, CMarker &marker)
+void CInputStreamTG12::readMarker(qint16 measure, CMarker &marker)
 {
     marker.measure(measure);
 
@@ -477,7 +484,7 @@ void CInputStream::readMarker(qint16 measure, CMarker &marker)
     marker.color(readRGBColor());
 }
 
-QColor CInputStream::readRGBColor()
+QColor CInputStreamTG12::readRGBColor()
 {
     QColor color;
     color.setRed(readUByte());
@@ -489,7 +496,7 @@ QColor CInputStream::readRGBColor()
     return color;
 }
 
-void CInputStream::readNotes(CVoice &voice, CStream::CBeatData &data)
+void CInputStreamTG12::readNotes(CVoice &voice, CStreamTG12::CBeatData &data)
 {
     log_debug("Reading notes");
     quint8 header = NOTE_HAS_NEXT;
@@ -502,7 +509,7 @@ void CInputStream::readNotes(CVoice &voice, CStream::CBeatData &data)
     while( (header & NOTE_HAS_NEXT) != 0 );
 }
 
-void CInputStream::readNote(quint8 header, CVoice &voice, CStream::CBeatData &data)
+void CInputStreamTG12::readNote(quint8 header, CVoice &voice, CStreamTG12::CBeatData &data)
 {
     log_debug("Reading note");
     CNote note;
@@ -528,7 +535,7 @@ void CInputStream::readNote(quint8 header, CVoice &voice, CStream::CBeatData &da
     voice.noteAdd(note);
 }
 
-void CInputStream::readNoteEffect(CNoteEffect &effect)
+void CInputStreamTG12::readNoteEffect(CNoteEffect &effect)
 {
     log_debug("Reading note effect");
     qint32 header = readUByte(3);
@@ -594,7 +601,7 @@ void CInputStream::readNoteEffect(CNoteEffect &effect)
     effect.letRing((header & EFFECT_LET_RING) != 0);
 }
 
-CEffectBend* CInputStream::readBendEffect()
+CEffectBend* CInputStreamTG12::readBendEffect()
 {
     log_debug("Reading note effect bend");
     CEffectBend *effect = new CEffectBend();
@@ -616,7 +623,7 @@ CEffectBend* CInputStream::readBendEffect()
     return effect;
 }
 
-CEffectTremoloBar* CInputStream::readTremoloBarEffect()
+CEffectTremoloBar* CInputStreamTG12::readTremoloBarEffect()
 {
     log_debug("Reading note effect tremolo bar");
     CEffectTremoloBar *effect = new CEffectTremoloBar();
@@ -638,7 +645,7 @@ CEffectTremoloBar* CInputStream::readTremoloBarEffect()
     return effect;
 }
 
-CEffectHormonic* CInputStream::readHarmonicEffect()
+CEffectHormonic* CInputStreamTG12::readHarmonicEffect()
 {
     log_debug("Reading note effect harmonics");
     CEffectHormonic *effect = new CEffectHormonic();
@@ -655,7 +662,7 @@ CEffectHormonic* CInputStream::readHarmonicEffect()
     return effect;
 }
 
-CEffectGrace* CInputStream::readGraceEffect()
+CEffectGrace* CInputStreamTG12::readGraceEffect()
 {
     log_debug("Reading note effect grace");
     quint8 header = readUByte();
@@ -681,7 +688,7 @@ CEffectGrace* CInputStream::readGraceEffect()
     return effect;
 }
 
-CEffectTremoloPicking* CInputStream::readTremoloPickingEffect()
+CEffectTremoloPicking* CInputStreamTG12::readTremoloPickingEffect()
 {
     log_debug("Reading note effect trill");
     CEffectTremoloPicking *effect = new CEffectTremoloPicking();
@@ -692,7 +699,7 @@ CEffectTremoloPicking* CInputStream::readTremoloPickingEffect()
     return effect;
 }
 
-CEffectTrill* CInputStream::readTrillEffect()
+CEffectTrill* CInputStreamTG12::readTrillEffect()
 {
     log_debug("Reading note effect tremolo picking");
     CEffectTrill *effect = new CEffectTrill();
@@ -706,7 +713,7 @@ CEffectTrill* CInputStream::readTrillEffect()
     return effect;
 }
 
-void CInputStream::readStroke(CStroke &stroke)
+void CInputStreamTG12::readStroke(CStroke &stroke)
 {
     log_debug("Reading stroke direction");
     stroke.direction(readByte());
@@ -715,7 +722,7 @@ void CInputStream::readStroke(CStroke &stroke)
     stroke.value(readByte());
 }
 
-CChord* CInputStream::readChord()
+CChord* CInputStreamTG12::readChord()
 {
     log_debug("Reading chord");
     CChord *chord = new CChord(readByte());
@@ -733,7 +740,7 @@ CChord* CInputStream::readChord()
     return chord;
 }
 
-CText* CInputStream::readText()
+CText* CInputStreamTG12::readText()
 {
     log_debug("Reading text");
     CText *text = new CText();
@@ -743,7 +750,7 @@ CText* CInputStream::readText()
     return text;
 }
 
-CString CInputStream::readInstrumentString(qint8 number)
+CString CInputStreamTG12::readInstrumentString(qint8 number)
 {
     log_debug("Reading string #%i", number);
     CString string;
@@ -756,7 +763,7 @@ CString CInputStream::readInstrumentString(qint8 number)
     return string;
 }
 
-CLyrics CInputStream::readLyrics()
+CLyrics CInputStreamTG12::readLyrics()
 {
     log_debug("Reading lyrics");
     CLyrics lyrics;

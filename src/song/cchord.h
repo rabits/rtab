@@ -34,8 +34,8 @@ public:
 
     inline quint8 stringsCount() const { return m_strings.count(); }
 
-    inline qint8  fret(const quint8 string) const;
-    inline void   fret(const quint8 string, const qint8 val);
+    qint8  fret(const quint8 string) const;
+    void   fret(const quint8 string, const qint8 val);
 
     quint8        notesCount() const;
 

@@ -83,7 +83,9 @@ SOURCES += main.cpp \
     src/io/base/cfilemgr.cpp \
     src/io/tg/cstream.cpp \
     src/io/tg/cinputstream.cpp \
-    src/io/tg/coutputstream.cpp
+    src/io/tg/coutputstream.cpp \
+    src/io/tg/v12/cstreamtg12.cpp \
+    src/io/tg/v12/cinputstreamtg12.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -140,4 +142,6 @@ HEADERS += \
     src/io/base/cfilemgr.h \
     src/io/tg/cstream.h \
     src/io/tg/cinputstream.h \
-    src/io/tg/coutputstream.h
+    src/io/tg/coutputstream.h \
+    src/io/tg/v12/cstreamtg12.h \
+    src/io/tg/v12/cinputstreamtg12.h

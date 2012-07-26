@@ -7,7 +7,7 @@ using namespace Common;
 
 QList<QByteArray> CLog::s_msg_stack = QList<QByteArray>();
 
-const char *CLog::log(const char *level, const char *format, QString &arg1)
+const char *CLog::log(const char *level, const char *format, const QString &arg1)
 {
     if( s_msg_stack.count() > 9 )
         s_msg_stack.removeFirst();
@@ -20,7 +20,7 @@ const char *CLog::log(const char *level, const char *format, QString &arg1)
     return s_msg_stack.last().constData();
 }
 
-const char *CLog::log(const char *level, const char *format, QString &arg1, QString arg2)
+const char *CLog::log(const char *level, const char *format, const QString &arg1, const QString arg2)
 {
     if( s_msg_stack.count() > 9 )
         s_msg_stack.removeFirst();
@@ -33,7 +33,7 @@ const char *CLog::log(const char *level, const char *format, QString &arg1, QStr
     return s_msg_stack.last().constData();
 }
 
-const char *CLog::log(const char *level, const char *format, QString &arg1, QString &arg2, QString &arg3)
+const char *CLog::log(const char *level, const char *format, const QString &arg1, const QString &arg2, const QString &arg3)
 {
     if( s_msg_stack.count() > 9 )
         s_msg_stack.removeFirst();
