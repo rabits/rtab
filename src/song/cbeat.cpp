@@ -12,7 +12,7 @@ CBeat::CBeat(QObject *parent)
     , p_measure(NULL)
 {
     for( quint16 i = 0; i < MAX_VOICES; i++)
-        m_voices[i] = CVoice(i);
+        m_voices.insert(i, CVoice(i));
 }
 
 CBeat::CBeat(const CBeat &obj)

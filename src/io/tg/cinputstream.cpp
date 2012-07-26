@@ -53,7 +53,7 @@ void CInputStream::readVersion()
     if( m_version.isEmpty() )
     {
         log_debug("Reading version");
-        m_version = readUnsignedByteString();
+        m_version = readUByteString();
     }
 }
 
@@ -62,21 +62,21 @@ CSong* CInputStream::read()
     CSong* song = new CSong();
 
     log_debug("Reading name");
-    song->name(readUnsignedByteString());
+    song->name(readUByteString());
     log_debug("Reading artist");
-    song->artist(readUnsignedByteString());
+    song->artist(readUByteString());
     log_debug("Reading album");
-    song->album(readUnsignedByteString());
+    song->album(readUByteString());
     log_debug("Reading author");
-    song->author(readUnsignedByteString());
+    song->author(readUByteString());
     log_debug("Reading date");
-    song->date(readUnsignedByteString());
+    song->date(readUByteString());
     log_debug("Reading copyright");
-    song->copyright(readUnsignedByteString());
+    song->copyright(readUByteString());
     log_debug("Reading writer");
-    song->writer(readUnsignedByteString());
+    song->writer(readUByteString());
     log_debug("Reading transcriber");
-    song->transcriber(readUnsignedByteString());
+    song->transcriber(readUByteString());
     log_debug("Reading comments");
     song->comments(readIntegerString());
 
@@ -100,7 +100,7 @@ CSong* CInputStream::read()
         readMeasureHeader(header, i + 1, header_start, last_header);
         song->measureHeaderAdd(header);
         header_start += header.length();
-        last_header = &(song->measureHeader(song->measureHeadersCount() - 1));
+        last_header = &(song->measureHeader(i));
     }
 
     log_debug("Reading tracks");
@@ -120,23 +120,23 @@ void CInputStream::readChannel(CChannel& channel)
     log_debug("Reading channel id");
     channel.id(readShort());
     log_debug("Reading bank");
-    channel.bank(readByte());
+    channel.bank(readUByte());
     log_debug("Reading program");
-    channel.program(readByte());
+    channel.program(readUByte());
     log_debug("Reading volume");
-    channel.volume(readByte());
+    channel.volume(readUByte());
     log_debug("Reading balance");
-    channel.balance(readByte());
+    channel.balance(readUByte());
     log_debug("Reading chorus");
-    channel.chorus(readByte());
+    channel.chorus(readUByte());
     log_debug("Reading reverb");
-    channel.reverb(readByte());
+    channel.reverb(readUByte());
     log_debug("Reading phaser");
-    channel.phaser(readByte());
+    channel.phaser(readUByte());
     log_debug("Reading tremolo");
-    channel.tremolo(readByte());
+    channel.tremolo(readUByte());
     log_debug("Reading name");
-    channel.name(readUnsignedByteString());
+    channel.name(readUByteString());
 
     readChannelParameters(channel);
 }
@@ -155,20 +155,21 @@ void CInputStream::readChannelParameters(CChannel &channel)
 
 void CInputStream::readChannelParameter(CChannel &channel)
 {
-    CChannelParameter parameter(readUnsignedByteString(), readIntegerString());
+    CChannelParameter parameter(readUByteString(), readIntegerString());
     channel.parameterAdd(parameter);
 }
 
-CMeasureHeader CInputStream::readMeasureHeader(CMeasureHeader &measure_header, qint32 number, qint64 start, const CMeasureHeader *last_header)
+void CInputStream::readMeasureHeader(CMeasureHeader &measure_header, qint32 number, qint64 start, const CMeasureHeader *last_header)
 {
-    quint32 header = readHeader();
+    log_debug("Reading measure header #%i", number);
+    quint8 header = readUByte();
 
     measure_header.number(number);
     measure_header.start(start);
 
-    log_debug("Reading time signature");
     if( (header & MEASURE_HEADER_TIMESIGNATURE) != 0 )
     {
+        log_debug("Reading time signature");
         CTimeSignature time_signature;
         readTimeSignature(time_signature);
         measure_header.timeSignature(time_signature);
@@ -176,9 +177,6 @@ CMeasureHeader CInputStream::readMeasureHeader(CMeasureHeader &measure_header, q
     else if( last_header != NULL )
         measure_header.timeSignature(last_header->timeSignature());
 
-    throw EXCEPTION("Nomore!");
-
-    log_debug("Reading tempo");
     if( (header & MEASURE_HEADER_TEMPO) != 0 )
     {
         CTempo tempo;
@@ -191,17 +189,21 @@ CMeasureHeader CInputStream::readMeasureHeader(CMeasureHeader &measure_header, q
     log_debug("Reading repeat open");
     measure_header.repeatOpen((header & MEASURE_HEADER_REPEAT_OPEN) != 0);
 
-    log_debug("Reading repeat close");
     if( (header & MEASURE_HEADER_REPEAT_CLOSE) != 0 )
-         measure_header.repeatClose(readShort());
+    {
+        log_debug("Reading repeat close");
+        measure_header.repeatClose(readShort());
+    }
 
-    log_debug("Reading repeat alternative");
     if( (header & MEASURE_HEADER_REPEAT_ALTERNATIVE) != 0 )
-         measure_header.repeatAlternative(readByte());
+    {
+        log_debug("Reading repeat alternative");
+        measure_header.repeatAlternative(readByte());
+    }
 
-    log_debug("Reading marker");
     if( (header & MEASURE_HEADER_MARKER) != 0 )
     {
+        log_debug("Found marker");
         CMarker marker;
         readMarker(number, marker);
         measure_header.marker(&marker);
@@ -212,30 +214,30 @@ CMeasureHeader CInputStream::readMeasureHeader(CMeasureHeader &measure_header, q
         measure_header.tripletFeel(readByte());
     else
         measure_header.tripletFeel( (last_header != NULL) ? last_header->tripletFeel() : CMeasureHeader::TRIPLET_FEEL_NONE );
-
-    return measure_header;
 }
 
 void CInputStream::readTempo(CTempo &tempo)
 {
+    log_debug("Reading tempo");
+    tempo.value(readShort());
 }
 
 void CInputStream::readTrack(qint8 number, CSong *song, CTrack &track)
 {
     log_debug("Reading track %i", number);
 
-    log_debug("Reading header");
-    qint32 header = readHeader();
+    log_debug("Reading track header");
+    quint8 header = readUByte();
 
     track.number(number);
-    log_debug("Reading name");
-    track.name(readUnsignedByteString());
+    log_debug("Reading track name");
+    track.name(readUByteString());
     track.solo((header & TRACK_SOLO) != 0);
     track.mute((header & TRACK_MUTE) != 0);
-    log_debug("Reading channel");
+    log_debug("Reading track channel");
     track.channelId(readShort());
 
-    log_debug("Reading measure headers");
+    log_debug("Reading track measures");
     quint16 measure_count = song->measureHeadersCount();
     CMeasure *last_measure = NULL;
     for(quint16 i = 0; i < measure_count; i++)
@@ -243,127 +245,115 @@ void CInputStream::readTrack(qint8 number, CSong *song, CTrack &track)
         track.measureAdd(readMeasure(song->measureHeader(i), last_measure));
         last_measure = &(track.measure(i));
     }
-///////////////////////////////////////////
-    /*
-    //leo la cantidad de cuerdas
-    int stringCount = readByte();
 
-    //leo las cuerdas
-    for(int i = 0;i < stringCount;i++){
-        track.getStrings().add(readInstrumentString(i + 1));
-    }
+    log_debug("Reading track strings count");
+    qint8 string_count = readByte();
 
-    //leo el offset
-    track.setOffset(TGTrack.MIN_OFFSET + readByte());
+    for( int i = 0; i < string_count; i++ )
+        track.stringAdd(readInstrumentString(i + 1));
 
-    //leo el color
-    readRGBColor(track.getColor());
+    log_debug("Reading track offset");
+    track.offset(CTrack::MIN_OFFSET + readByte());
 
-    //leo el lyrics
-    if(((header & TRACK_LYRICS) != 0)){
-        readLyrics(track.getLyrics());
-    }*/
+    track.color(readRGBColor());
+
+    if( (header & TRACK_LYRICS) != 0 )
+        track.lyrics(readLyrics());
 }
 
 CMeasure CInputStream::readMeasure(CMeasureHeader &measure_header, CMeasure *last_measure)
 {
-    qint32 header = readHeader();
+    log_debug("Read measure");
     CMeasure measure(measure_header);
+    quint8 header = readUByte();
     CBeatData data(measure);
 
-    log_debug("Reading beats");
     readBeats(measure, data);
-////////////////////////////////
-    /*
-    measure.setClef( (lastMeasure == null)?TGMeasure.CLEF_TREBLE:lastMeasure.getClef());
-    if(((header & MEASURE_CLEF) != 0)){
-        measure.setClef(readByte());
-    }
 
-    //leo el key signature
-    measure.setKeySignature((lastMeasure == null)?0:lastMeasure.getKeySignature());
-    if(((header & MEASURE_KEYSIGNATURE) != 0)){
-        measure.setKeySignature(readByte());
-    }
-*/
+    log_debug("Reading clef");
+    if( (header & MEASURE_CLEF) != 0 )
+        measure.clef(readByte());
+    else
+        measure.clef((last_measure == NULL) ? CMeasure::CLEF_TREBLE : last_measure->clef());
+
+    log_debug("Reading key signature");
+    if( (header & MEASURE_KEYSIGNATURE) != 0 )
+        measure.keySignature(readByte());
+    else
+        measure.keySignature((last_measure == NULL) ? 0 : last_measure->keySignature());
+
     return measure;
 }
 
 void CInputStream::readBeats(CMeasure &measure, CStream::CBeatData &data)
 {
-    qint32 header = BEAT_HAS_NEXT;
-    while( (header & BEAT_HAS_NEXT) != 0 )
+    log_debug("Reading beats");
+    quint8 header = BEAT_HAS_NEXT;
+    do
     {
-        header = readHeader();
+        log_debug("Reading header");
+        header = readUByte();
         readBeat(header, measure, data);
     }
+    while( (header & BEAT_HAS_NEXT) != 0 );
 }
 
-void CInputStream::readBeat(quint32 header, CMeasure &measure, CStream::CBeatData &data)
+void CInputStream::readBeat(quint8 header, CMeasure &measure, CStream::CBeatData &data)
 {
+    log_debug("Reading beat");
     CBeat beat;
 
     beat.start(data.currentStart());
 
     readVoices(header, beat, data);
-/////////////////////////////
-    /*
-    //leo el stroke
-    if(((header & BEAT_HAS_STROKE) != 0)){
-        readStroke(beat.getStroke());
-    }
 
-    //leo el acorde
-    if(((header & BEAT_HAS_CHORD) != 0)){
-        readChord(beat);
-    }
+    if( (header & BEAT_HAS_STROKE) != 0 )
+        readStroke(beat.stroke());
 
-    //leo el texto
-    if(((header & BEAT_HAS_TEXT) != 0)){
-        readText(beat);
-    }*/
+    if( (header & BEAT_HAS_CHORD) != 0 )
+        beat.chord(readChord());
+
+    if( (header & BEAT_HAS_TEXT) != 0 )
+        beat.text(readText());
 
     measure.beatAdd(beat);
 }
 
-void CInputStream::readVoices(quint32 header, CBeat &beat, CStream::CBeatData &data)
+void CInputStream::readVoices(quint8 header, CBeat &beat, CStream::CBeatData &data)
 {
+    log_debug("Reading voices");
     for( quint8 i = 0 ; i < CBeat::MAX_VOICES; i++ )
     {
         quint16 shift = i * 2;
 
         beat.voice(i).empty(true);
-//////////////////////////
-        /*
-        if(((header & (BEAT_HAS_VOICE << shift)) != 0)){
-            if(((header & (BEAT_HAS_VOICE_CHANGES << shift)) != 0)){
-                data.getVoice(i).setFlags( readHeader() );
+
+        if( (header & (BEAT_HAS_VOICE << shift)) != 0 )
+        {
+            if( (header & (BEAT_HAS_VOICE_CHANGES << shift)) != 0 )
+            {
+                log_debug("Reading flags");
+                data.voice(i).flags(readUByte());
             }
 
-            int flags = data.getVoice(i).getFlags();
+            qint32 flags = data.voice(i).flags();
 
-            //leo la duracion
-            if(((flags & VOICE_NEXT_DURATION) != 0)){
-                readDuration(data.getVoice(i).getDuration());
-            }
+            if( (flags & VOICE_NEXT_DURATION) != 0 )
+                readDuration(data.voice(i).duration());
 
-            //leo las notas
-            if(((flags & VOICE_HAS_NOTES) != 0)){
-                readNotes(beat.getVoice(i), data);
-            }
+            if( (flags & VOICE_HAS_NOTES) != 0 )
+                readNotes(beat.voice(i), data);
 
-            //leo la direccion
-            if(((flags & VOICE_DIRECTION_UP) != 0)){
-                beat.getVoice(i).setDirection( TGVoice.DIRECTION_UP );
-            }
-            else if(((flags & VOICE_DIRECTION_DOWN) != 0)){
-                beat.getVoice(i).setDirection( TGVoice.DIRECTION_DOWN );
-            }
-            data.getVoice(i).getDuration().copy(beat.getVoice(i).getDuration());
-            data.getVoice(i).setStart(data.getVoice(i).getStart() + beat.getVoice(i).getDuration().getTime());
+            if( (flags & VOICE_DIRECTION_UP) != 0 )
+                beat.voice(i).direction( CVoice::DIRECTION_UP );
+            else if( (flags & VOICE_DIRECTION_DOWN) != 0 )
+                beat.voice(i).direction( CVoice::DIRECTION_DOWN );
 
-            beat.getVoice(i).setEmpty(false);
-        }*/
+            data.voice(i).duration(beat.voice(i).duration());
+            data.voice(i).start(data.voice(i).start() + beat.voice(i).duration().time());
+
+            beat.voice(i).empty(false);
+        }
     }
 }
 
@@ -381,7 +371,7 @@ void CInputStream::readTimeSignature(CTimeSignature &time_signature)
 void CInputStream::readDuration(CDuration &duration)
 {
     log_debug("Reading duration");
-    qint32 header = readHeader();
+    quint8 header = readUByte();
 
     log_debug("Reading dotted");
     duration.dotted((header & DURATION_DOTTED) != 0);
@@ -412,19 +402,19 @@ void CInputStream::readDivisionType(CDivisionType &division)
     division.time(readByte());
 }
 
-qint32 CInputStream::readHeader()
+quint8 CInputStream::readUByte()
 {
-    qint32 data;
+    quint8 data;
     (*m_data_stream) >> data;
-    log_debug("Reading header: %i", data);
+    log_debug("Reading ubyte: %i", data);
     return data;
 }
 
-qint32 CInputStream::readHeader(qint32 count)
+qint32 CInputStream::readUByte(qint32 count)
 {
     qint32 header = 0;
     for(qint32 i = count; i > 0; i--)
-        header += ( readHeader() << ( (8 * i) - 8 ) );
+        header += ( ((qint32)readUByte() ) << ( (8 * i) - 8 ) );
 
     return header;
 }
@@ -445,11 +435,11 @@ qint16 CInputStream::readShort()
     return data;
 }
 
-QString CInputStream::readUnsignedByteString()
+QString CInputStream::readUByteString()
 {
     quint8 data;
     (*m_data_stream) >> data;
-    log_debug("Reading byte length: %i", data);
+    log_debug("Reading ubyte length: %i", data);
 
     return data > 0 ? readString(data) : "";
 }
@@ -471,11 +461,311 @@ QString CInputStream::readString(quint64 length)
     QString out = stream.read(length);
     stream.seek(lastpos + length * 2);
 
-    log_debug("Finished reading '%1'", out);
+    log_debug("Readed string '%1'", out);
 
     return out;
 }
 
-void CInputStream::readMarker(qint32 number, CMarker &marker)
+void CInputStream::readMarker(qint16 measure, CMarker &marker)
 {
+    marker.measure(measure);
+
+    log_debug("Reading marker title");
+    marker.title(readUByteString());
+
+    log_debug("Reading marker color");
+    marker.color(readRGBColor());
+}
+
+QColor CInputStream::readRGBColor()
+{
+    QColor color;
+    color.setRed(readUByte());
+    color.setGreen(readUByte());
+    color.setBlue(readUByte());
+
+    log_debug("Readed color 'R%i G%i B%i'", color.red(), color.green(), color.blue());
+
+    return color;
+}
+
+void CInputStream::readNotes(CVoice &voice, CStream::CBeatData &data)
+{
+    log_debug("Reading notes");
+    quint8 header = NOTE_HAS_NEXT;
+    do
+    {
+        log_debug("Reading header");
+        header = readUByte();
+        readNote(header, voice, data);
+    }
+    while( (header & NOTE_HAS_NEXT) != 0 );
+}
+
+void CInputStream::readNote(quint8 header, CVoice &voice, CStream::CBeatData &data)
+{
+    log_debug("Reading note");
+    CNote note;
+
+    log_debug("Reading note value");
+    note.value(readByte());
+
+    log_debug("Reading note string");
+    note.string(readByte());
+
+    log_debug("Reading note tied");
+    note.tied((header & NOTE_TIED) != 0);
+
+    log_debug("Reading note velocity");
+    if( (header & NOTE_VELOCITY) != 0 )
+        data.voice(voice.index()).velocity(readByte());
+
+    note.velocity(data.voice(voice.index()).velocity());
+
+    if( (header & NOTE_EFFECT) != 0 )
+        readNoteEffect(note.effect());
+
+    voice.noteAdd(note);
+}
+
+void CInputStream::readNoteEffect(CNoteEffect &effect)
+{
+    log_debug("Reading note effect");
+    qint32 header = readUByte(3);
+
+    if( (header & EFFECT_BEND) != 0 )
+        effect.bend(readBendEffect());
+
+    if( (header & EFFECT_TREMOLO_BAR) != 0 )
+        effect.tremoloBar(readTremoloBarEffect());
+
+    if( (header & EFFECT_HARMONIC) != 0 )
+        effect.harmonic(readHarmonicEffect());
+
+    if( (header & EFFECT_GRACE) != 0 )
+        effect.grace(readGraceEffect());
+
+    if( (header & EFFECT_TRILL) != 0 )
+        effect.trill(readTrillEffect());
+
+    if( (header & EFFECT_TREMOLO_PICKING) != 0 )
+        effect.tremoloPicking(readTremoloPickingEffect());
+
+    // Vibrato
+    effect.vibrato((header & EFFECT_VIBRATO) != 0);
+
+    // Dead note
+    effect.dead((header & EFFECT_DEAD) != 0);
+
+    // Slide
+    effect.slide((header & EFFECT_SLIDE) != 0);
+
+    // Hammer-on/pull-off
+    effect.hammer((header & EFFECT_HAMMER) != 0);
+
+    // Ghost note
+    effect.ghost((header & EFFECT_GHOST) != 0);
+
+    // Accentuated note
+    effect.accentuated((header & EFFECT_ACCENTUATED) != 0);
+
+    // Heavy accentuated note
+    effect.heavyAccentuated((header & EFFECT_HEAVY_ACCENTUATED) != 0);
+
+    // Palm mute
+    effect.palmMute((header & EFFECT_PALM_MUTE) != 0);
+
+    // Staccato
+    effect.staccato((header & EFFECT_STACCATO) != 0);
+
+    // Tapping
+    effect.tapping((header & EFFECT_TAPPING) != 0);
+
+    // Slapping
+    effect.slapping((header & EFFECT_SLAPPING) != 0);
+
+    // Popping
+    effect.popping((header & EFFECT_POPPING) != 0);
+
+    // Fade in
+    effect.fadeIn((header & EFFECT_FADE_IN) != 0);
+
+    // Let ring
+    effect.letRing((header & EFFECT_LET_RING) != 0);
+}
+
+CEffectBend* CInputStream::readBendEffect()
+{
+    log_debug("Reading note effect bend");
+    CEffectBend *effect = new CEffectBend();
+
+    log_debug("Reading points count");
+    qint8 count = readByte();
+
+    for(qint8 i = 0; i < count; i++)
+    {
+        log_debug("Reading point position");
+        qint8 position = readByte();
+
+        log_debug("Reading point value");
+        qint8 value = readByte();
+
+        effect->pointAdd(position, value);
+    }
+
+    return effect;
+}
+
+CEffectTremoloBar* CInputStream::readTremoloBarEffect()
+{
+    log_debug("Reading note effect tremolo bar");
+    CEffectTremoloBar *effect = new CEffectTremoloBar();
+
+    log_debug("Reading points count");
+    qint8 count = readByte();
+
+    for(qint8 i = 0; i < count; i++)
+    {
+        log_debug("Reading point position");
+        qint8 position = readByte();
+
+        log_debug("Reading point value");
+        qint8 value = readByte() - CEffectTremoloBar::MAX_VALUE_LENGTH;
+
+        effect->pointAdd(position, value);
+    }
+
+    return effect;
+}
+
+CEffectHormonic* CInputStream::readHarmonicEffect()
+{
+    log_debug("Reading note effect harmonics");
+    CEffectHormonic *effect = new CEffectHormonic();
+
+    log_debug("Reading type");
+    effect->type(readByte());
+
+    if( effect->type() != CEffectHormonic::TYPE_NATURAL)
+    {
+        log_debug("Reading data");
+        effect->data(readByte());
+    }
+
+    return effect;
+}
+
+CEffectGrace* CInputStream::readGraceEffect()
+{
+    log_debug("Reading note effect grace");
+    quint8 header = readUByte();
+
+    CEffectGrace *effect = new CEffectGrace();
+
+    effect->dead((header & GRACE_FLAG_DEAD) != 0) ;
+
+    effect->onBeat((header & GRACE_FLAG_ON_BEAT) != 0) ;
+
+    log_debug("Reading fret");
+    effect->fret(readByte());
+
+    log_debug("Reading duration");
+    effect->duration(readByte());
+
+    log_debug("Reading dynamic");
+    effect->dynamic(readByte());
+
+    log_debug("Reading transition");
+    effect->transition(readByte());
+
+    return effect;
+}
+
+CEffectTremoloPicking* CInputStream::readTremoloPickingEffect()
+{
+    log_debug("Reading note effect trill");
+    CEffectTremoloPicking *effect = new CEffectTremoloPicking();
+
+    log_debug("Reading duration value");
+    effect->duration().value(readByte());
+
+    return effect;
+}
+
+CEffectTrill* CInputStream::readTrillEffect()
+{
+    log_debug("Reading note effect tremolo picking");
+    CEffectTrill *effect = new CEffectTrill();
+
+    log_debug("Reading fret");
+    effect->fret(readByte());
+
+    log_debug("Reading duration value");
+    effect->duration().value(readByte());
+
+    return effect;
+}
+
+void CInputStream::readStroke(CStroke &stroke)
+{
+    log_debug("Reading stroke direction");
+    stroke.direction(readByte());
+
+    log_debug("Reading stroke value");
+    stroke.value(readByte());
+}
+
+CChord* CInputStream::readChord()
+{
+    log_debug("Reading chord");
+    CChord *chord = new CChord(readByte());
+
+    log_debug("Reading name");
+    chord->name(readUByteString());
+
+    log_debug("Reading first fret");
+    chord->firstFret(readByte());
+
+    log_debug("Reading frets");
+    for( qint8 string = 0; string < chord->stringsCount(); string++ )
+        chord->fret(string, readByte());
+
+    return chord;
+}
+
+CText* CInputStream::readText()
+{
+    log_debug("Reading text");
+    CText *text = new CText();
+
+    text->value(readUByteString());
+
+    return text;
+}
+
+CString CInputStream::readInstrumentString(qint8 number)
+{
+    log_debug("Reading string #%i", number);
+    CString string;
+
+    string.number(number);
+
+    log_debug("Reading value");
+    string.value(readByte());
+
+    return string;
+}
+
+CLyrics CInputStream::readLyrics()
+{
+    log_debug("Reading lyrics");
+    CLyrics lyrics;
+
+    log_debug("Reading lyrics from");
+    lyrics.from(readShort());
+
+    log_debug("Reading lyrics text");
+    lyrics.lyrics(readIntegerString());
+
+    return lyrics;
 }

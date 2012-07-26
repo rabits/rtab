@@ -23,7 +23,7 @@ public:
     class CPointBend : public CPoint
     {
     public:
-        explicit CPointBend(quint16 position, qint16 value, QObject *parent = 0);
+        explicit CPointBend(qint8 position, qint8 value, QObject *parent = 0);
         inline qint64 time(qint64 duration) const { return (duration * position() / MAX_POSITION_LENGTH); }
     };
 
@@ -32,12 +32,12 @@ public:
 
     inline void points(const QList<CPointBend> &val) { m_points = val; emit pointsChanged(); }
 
-    inline quint16           pointsCount()                           const { return m_points.count(); }
-    inline const CPointBend& point(const quint16 index)              const { return m_points[index]; }
-    inline CPointBend&       point(const quint16 index)                    { return m_points[index]; }
-    inline void              pointAdd(const quint16 pos, const qint16 val) { m_points.append(CPointBend(pos, val)); emit pointsChanged(); }
-    inline void              pointRemove(const quint16 index)              { m_points.removeAt(index); emit pointsChanged(); }
-    inline void              pointRemove(const CPointBend &val)            { m_points.removeOne(val); emit pointsChanged(); }
+    inline quint16           pointsCount()                        const { return m_points.count(); }
+    inline const CPointBend& point(const quint16 index)           const { return m_points[index]; }
+    inline CPointBend&       point(const quint16 index)                 { return m_points[index]; }
+    inline void              pointAdd(const qint8 pos, const qint8 val) { m_points.append(CPointBend(pos, val)); emit pointsChanged(); }
+    inline void              pointRemove(const quint16 index)           { m_points.removeAt(index); emit pointsChanged(); }
+    inline void              pointRemove(const CPointBend &val)         { m_points.removeOne(val); emit pointsChanged(); }
 
 signals:
     void pointsChanged();

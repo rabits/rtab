@@ -32,7 +32,7 @@ namespace Common
          * @param file
          * @param line
          */
-        CException(const QString &description, const QString &source, const char* file, long line);
+        CException(const QString &description, const QString &source, const char* file, quint32 line);
 
         /** @brief Default destructor
          */

@@ -1,13 +1,13 @@
 #include "cchord.h"
 
-CChord::CChord(quint8 length, QObject *parent)
+CChord::CChord(qint8 length, QObject *parent)
     : QObject(parent)
     , m_firstFret()
     , m_strings()
     , m_name()
     , p_beat(NULL)
 {
-    for( quint16 i = 0; i < length; i++ )
+    for( qint8 i = 0; i < length; i++ )
         m_strings[i] = -1;
 }
 

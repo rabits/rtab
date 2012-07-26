@@ -20,7 +20,7 @@ CEffectBend &CEffectBend::operator =(const CEffectBend &obj)
     return *this;
 }
 
-CEffectBend::CPointBend::CPointBend(quint16 position, qint16 value, QObject *parent)
+CEffectBend::CPointBend::CPointBend(qint8 position, qint8 value, QObject *parent)
     : CPoint(position, value, parent)
 {
 }

@@ -26,24 +26,39 @@ private:
     void readChannel(CChannel &channel);
     void readChannelParameters(CChannel &channel);
     void readChannelParameter(CChannel &channel);
-    CMeasureHeader readMeasureHeader(CMeasureHeader &measure_header, qint32 number, qint64 start, const CMeasureHeader *last_header);
+    void readMeasureHeader(CMeasureHeader &measure_header, qint32 number, qint64 start, const CMeasureHeader *last_header);
     void readTempo(CTempo &tempo);
-    void readMarker(qint32 number, CMarker &marker);
-    qint32 readHeader();
+    void readMarker(qint16 measure, CMarker &marker);
+    QColor readRGBColor();
     void readTimeSignature(CTimeSignature &time_signature);
     void readDuration(CDuration &duration);
     void readDivisionType(CDivisionType &division);
-    qint32 readHeader(qint32 count);
     void readTrack(qint8 number, CSong *song, CTrack &track);
     CMeasure readMeasure(CMeasureHeader &measure_header, CMeasure *last_measure);
     void readBeats(CMeasure &measure, CBeatData &data);
-    void readBeat(quint32 header, CMeasure &measure, CBeatData &data);
-    void readVoices(quint32 header, CBeat &beat, CBeatData &data);
+    void readBeat(quint8 header, CMeasure &measure, CBeatData &data);
+    void readVoices(quint8 header, CBeat &beat, CBeatData &data);
+    void readNotes(CVoice &voice, CBeatData &data);
+    void readNote(quint8 header, CVoice &voice, CBeatData &data);
+    void readNoteEffect(CNoteEffect &effect);
+    CEffectBend*           readBendEffect();
+    CEffectTremoloBar*     readTremoloBarEffect();
+    CEffectHormonic*       readHarmonicEffect();
+    CEffectGrace*          readGraceEffect();
+    CEffectTrill*          readTrillEffect();
+    CEffectTremoloPicking* readTremoloPickingEffect();
+    void readStroke(CStroke &stroke);
+    CChord* readChord();
+    CText*  readText();
+    CString readInstrumentString(qint8 number);
+    CLyrics readLyrics();
 
+    quint8  readUByte();
+    qint32  readUByte(qint32 count);
     qint8   readByte();
     qint16  readShort();
 
-    QString readUnsignedByteString();
+    QString readUByteString();
     QString readIntegerString();
     QString readString(quint64 length);
 

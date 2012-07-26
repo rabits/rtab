@@ -14,7 +14,7 @@ class CMeasure
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(CLEF            clef READ clef WRITE clef NOTIFY clefChanged)
+    Q_PROPERTY(qint8           clef READ clef WRITE clef NOTIFY clefChanged)
     Q_PROPERTY(qint16          keySignature READ keySignature WRITE keySignature NOTIFY keySignatureChanged)
     Q_PROPERTY(QList<CBeat>    beats READ beats WRITE beats NOTIFY beatsChanged)
     Q_PROPERTY(CMeasureHeader* header READ header WRITE header NOTIFY headerChanged)
@@ -40,14 +40,14 @@ public:
     static const qint16 DEFAULT_KEY_SIGNATURE = 0;
 
     // ---API--- //
-    inline CLEF                clef()         const { return m_clef; }
+    inline qint8               clef()         const { return m_clef; }
     inline qint16              keySignature() const { return m_keySignature; }
     inline const QList<CBeat>& beats()        const { return m_beats; }
     inline CMeasureHeader*     header()       const { return p_header; }
     inline CMeasureHeader*     header()             { return p_header; }
     inline CTrack*             track()        const { return p_track; }
 
-    inline void clef(const CLEF val)           { m_clef = val; emit clefChanged(); }
+    inline void clef(const qint8 val)          { m_clef = val; emit clefChanged(); }
     inline void keySignature(const qint16 val) { m_keySignature = val; emit keySignatureChanged(); }
     inline void beats(const QList<CBeat> &val) { m_beats = val; emit beatsChanged(); }
     inline void header(CMeasureHeader *val)    { p_header = val; emit headerChanged(); }
@@ -71,7 +71,7 @@ signals:
 private:
     void updateThisLinks();
 
-    CLEF            m_clef;
+    qint8           m_clef;
     qint16          m_keySignature;
     QList<CBeat>    m_beats;
     CMeasureHeader *p_header;

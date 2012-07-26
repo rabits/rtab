@@ -11,7 +11,7 @@ CStream::CBeatData::CBeatData(CMeasure &measure)
     , m_voices()
 {
     for(quint16 i = 0; i < CBeat::MAX_VOICES; i++)
-        m_voices[i] = CVoiceData(measure);
+        m_voices.insert(i, CStream::CVoiceData(measure));
 }
 
 qint64 CStream::CBeatData::currentStart()

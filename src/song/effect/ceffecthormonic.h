@@ -7,7 +7,7 @@ class CEffectHormonic
     : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(TYPE    type READ type WRITE type NOTIFY typeChanged)
+    Q_PROPERTY(qint8   type READ type WRITE type NOTIFY typeChanged)
     Q_PROPERTY(quint16 data READ data WRITE data NOTIFY dataChanged)
 
 public:
@@ -44,10 +44,10 @@ public:
     };*/
 
     // ---API--- //
-    inline TYPE    type()       const { return m_type; }
+    inline qint8   type()       const { return m_type; }
     inline qint16  data()       const { return m_data; }
 
-    inline void type(const TYPE val)   { m_type = val; emit typeChanged(); }
+    inline void type(const qint8 val)  { m_type = val; emit typeChanged(); }
     inline void data(const qint16 val) { m_data = val; emit dataChanged(); }
 
     inline bool isNatural()   const { return m_type == TYPE_NATURAL; }
@@ -61,7 +61,7 @@ signals:
     void dataChanged();
 
 private:
-    TYPE   m_type;
+    qint8  m_type;
     qint16 m_data;
 };
 

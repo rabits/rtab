@@ -11,12 +11,12 @@ CException::CException(const QString &description, const QString &source)
 {
 }
 
-CException::CException(const QString &description, const QString &source, const char* file, long line)
+CException::CException(const QString &description, const QString &source, const char* file, quint32 line)
     : m_source(source)
     , m_file(file)
     , m_description(description)
     , m_line(line)
-    , m_full_description("Exception: '" + description + "' in " + source + " at " + file + " : " + line)
+    , m_full_description("Exception: '" + description + "' in " + source + " at " + file + " : " + QString::number(line))
 {
 }
 
