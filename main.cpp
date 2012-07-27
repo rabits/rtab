@@ -30,8 +30,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
         log_notice("Init done, starting");
 
-        CTab::i()->songOpen("/home/psa/Projects/rtab/tmp/test02.tg");
-        CTab::i()->songOpen("/home/psa/Projects/rtab/tmp/test03.tg");
+        CTab::i()->songOpen("/home/psa/Projects/rtab/tmp/test07.v121.tg");
 
         viewer.showExpanded();
         return app->exec();

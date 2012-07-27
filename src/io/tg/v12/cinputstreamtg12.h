@@ -19,9 +19,9 @@ public:
     inline CFileFormat getFileFormat() { return CFileFormat("TuxGuitar", QStringList(tgExtension())); }
     CSong*             readSong();
 
-private:
-    inline void readVersion();
-    CSong*      read();
+protected:
+    void   readVersion();
+    CSong* read();
 
     void readChannel(CSong *song, CTrack &track);
     void readMeasureHeader(CMeasureHeader &measure_header, qint32 number, qint64 start, const CMeasureHeader *last_header);

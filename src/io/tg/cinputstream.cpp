@@ -155,7 +155,9 @@ void CInputStream::readChannelParameters(CChannel &channel)
 
 void CInputStream::readChannelParameter(CChannel &channel)
 {
-    CChannelParameter parameter(readUByteString(), readIntegerString());
+    CChannelParameter parameter;
+    parameter.key(readUByteString());
+    parameter.value(readIntegerString());
     channel.parameterAdd(parameter);
 }
 

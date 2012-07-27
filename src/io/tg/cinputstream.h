@@ -20,8 +20,8 @@ public:
     CSong*             readSong();
 
 private:
-    inline void readVersion();
-    CSong*      read();
+    void   readVersion();
+    CSong* read();
 
     void readChannel(CChannel &channel);
     void readChannelParameters(CChannel &channel);

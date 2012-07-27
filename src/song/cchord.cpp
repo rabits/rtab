@@ -8,7 +8,7 @@ CChord::CChord(qint8 length, QObject *parent)
     , p_beat(NULL)
 {
     for( qint8 i = 0; i < length; i++ )
-        m_strings[i] = -1;
+        m_strings.insert(i, -1);
 }
 
 CChord::CChord(const CChord &obj)

@@ -114,11 +114,11 @@ void CInputStreamTG12::readChannel(CSong *song, CTrack &track)
     CChannelParameter gmChannel2Param;
 
     quint8 channel1 = readUByte();
-    gmChannel1Param.key("1"); // TODO: get info
+    gmChannel1Param.key("gm-channel-1");
     gmChannel1Param.value(QString::number(channel1));
 
     quint8 channel2 = readUByte();
-    gmChannel2Param.key("2"); // TODO: get info
+    gmChannel2Param.key("gm-channel-2");
     gmChannel2Param.value(QString::number(channel2));
 
     log_debug("Reading bank");
@@ -141,10 +141,10 @@ void CInputStreamTG12::readChannel(CSong *song, CTrack &track)
     for( quint8 i = 0; i < song->channelsCount(); i++ )
     {
         CChannel channel_aux = song->channel(i);
-        for( int n = 0; n < channel_aux.parametersCount(); n++ )
+        for( quint16 n = 0; n < channel_aux.parametersCount(); n++ )
         {
             CChannelParameter channel_parameter = channel_aux.parameter(n);
-            if( channel_parameter.key() == "1" )
+            if( channel_parameter.key() == "gm-channel-1" )
             {
                 if( QString(channel1) == channel_parameter.value() )
                     channel.id(channel_aux.id());
