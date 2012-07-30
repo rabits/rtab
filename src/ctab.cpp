@@ -15,6 +15,10 @@
 
 #include "io/base/cfilemgr.h"
 #include <QFile>
+#include <QLocale>
+#include <QDesktopWidget>
+#include <QDir>
+#include <qmath.h>
 
 CTab* CTab::sp_instance = NULL;
 
@@ -24,15 +28,46 @@ CTab::CTab(QObject *parent)
 {
     // Set default settings
     log_info("Init engine");
+
+    if( m_settings.value("preferences/locale").isNull() )
+        m_settings.setValue("preferences/locale", QLocale::system().name());
+
+    if( m_settings.value("preferences/last_folder").isNull() )
+        m_settings.setValue("preferences/last_folder", QString(QDir::homePath()));
+
+    if( m_settings.value("preferences/file_history_max_count").isNull() )
+        m_settings.setValue("preferences/file_history_max_count", 10);
+
+    if( m_settings.value("preferences/device").isNull() )
+#if defined(Q_OS_SYMBIAN) || defined(MEEGO_EDITION_HARMATTAN) || defined(Q_WS_SIMULATOR)
+        m_settings.setValue("preferences/device_screen", "small");
+#else
+        m_settings.setValue("preferences/device_screen", "big");
+#endif
+    fileHistoryLoad();
 }
 
-void CTab::initContext(QmlApplicationViewer &viewer)
+void CTab::initContext(QmlApplicationViewer &viewer, QScopedPointer<QApplication> *app)
 {
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 
     m_context = viewer.rootContext();
 
-    m_context->setContextProperty("CTab", this);
+    m_context->setContextProperty("ctab", this);
+
+    m_app = app;
+    changeLocale(setting("preferences/locale").toString());
+    (*m_app)->installTranslator(&m_translator);
+}
+
+void CTab::changeLocale(QString locale)
+{
+    log_notice("Changing locale to %1", locale);
+    if( ! m_translator.load("tr_" + locale, ":/") )
+    {
+        m_translator.load("tr_en", ":/");
+        setting("preferences/locale", "en");
+    }
 }
 
 void CTab::initRoot(QmlApplicationViewer &viewer)
@@ -48,20 +83,60 @@ QVariant CTab::setting(QString key, QString value)
     return m_settings.value(key);
 }
 
+void CTab::fileHistorySave()
+{
+    quint16 count = setting("preferences/file_history_max_count").toInt();
+    if( fileHistoryCount() > count )
+    {
+        m_file_history.removeLast();
+        emit fileHistoryChanged();
+    }
+
+    m_settings.beginWriteArray("file_history/song", count);
+    for( quint16 i = 0; i < count; i++ )
+    {
+        m_settings.setArrayIndex(i);
+        m_settings.setValue("path", fileHistory(i));
+    }
+    m_settings.endArray();
+}
+
+void CTab::fileHistoryLoad()
+{
+    m_file_history.clear();
+
+    quint16 count = m_settings.beginReadArray("file_history/file");
+    for( quint16 i = 0; i < count; i++ )
+    {
+        m_settings.setArrayIndex(i);
+        m_file_history.append(m_settings.value("path").toString());
+    }
+    m_settings.endArray();
+
+    emit fileHistoryChanged();
+}
+
 CSong* CTab::songOpen(QString file_path)
 {
     log_notice("Start loading file '%1'", file_path);
 
     QFile file(file_path);
-    QDataStream *stream = new QDataStream(&file);
+    QDataStream *stream = NULL;
 
     try {
+        if( ! file.isReadable() )
+            throw EXCEPTION(log_error("File is not readable"));
+
+        stream = new QDataStream(&file);
         CSong *song = CFileMgr::i()->load(stream);
-        if( song != NULL )
-        {
-            songAdd(song);
-            log_info("File loading completed '%1'", file_path);
-        }
+
+        if( song == NULL )
+            throw EXCEPTION(log_error("Song can't be created"));
+
+        songAdd(song);
+        log_info("File loading completed '%1'", file_path);
+        fileHistoryAdd(file_path);
+
         return song;
     }
     catch( Common::CException const &e ) {

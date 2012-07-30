@@ -15,8 +15,8 @@
 #define COMMON_H
 
 #ifdef CONFIG_DEBUG
-#   define log_debug(format, ...)   Common::CLog::log("DEBUG ", format, ##__VA_ARGS__)   ///< Debug log
-#   define log_info(format, ...)    Common::CLog::log("INFO  ", format, ##__VA_ARGS__)   ///< Info log
+#   define log_debug(format, ...)   Common::CLog::log("DEBUG   ", format, ##__VA_ARGS__) ///< Debug log
+#   define log_info(format, ...)    Common::CLog::log("INFO    ", format, ##__VA_ARGS__) ///< Info log
 #   define EXCEPTION(message)       Common::CException(message, __FUNCTION__, __FILE__, __LINE__) ///< Hard exception
 #else
 #   define log_debug(format, ...)   /* not logged */                                     ///< Disabled Debug log

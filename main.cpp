@@ -35,15 +35,17 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
         QmlApplicationViewer viewer;
 
-        CTab::i()->initContext(viewer);
+        log_info("Creating context");
+        CTab::i()->initContext(viewer, &app);
 
+        log_info("Loading qml");
         viewer.setMainQmlFile(QLatin1String("qml/rtab/main.qml"));
 
         CTab::i()->initRoot(viewer);
 
         log_notice("Init done, starting");
 
-        CTab::i()->songOpen("/home/psa/Projects/rtab/tmp/test07.v121.tg");
+        CTab::i()->songOpen("tmp/test07.v121.tg");
 
         viewer.showExpanded();
         return app->exec();
