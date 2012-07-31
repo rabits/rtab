@@ -39,7 +39,7 @@ CTab::CTab(QObject *parent)
         m_settings.setValue("preferences/file_history_max_count", 10);
 
     if( m_settings.value("preferences/device").isNull() )
-#if defined(Q_OS_SYMBIAN) || defined(MEEGO_EDITION_HARMATTAN) || defined(Q_WS_SIMULATOR)
+#if defined(Q_OS_SYMBIAN) || defined(MEEGO_EDITION_HARMATTAN) || defined(Q_WS_SIMULATOR) || defined(Q_WS_S60) || defined(Q_WS_MAEMO)
         m_settings.setValue("preferences/device_screen", "small");
 #else
         m_settings.setValue("preferences/device_screen", "big");

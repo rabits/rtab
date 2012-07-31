@@ -85,7 +85,11 @@ SOURCES += main.cpp \
     src/io/tg/cinputstream.cpp \
     src/io/tg/coutputstream.cpp \
     src/io/tg/v12/cstreamtg12.cpp \
-    src/io/tg/v12/cinputstreamtg12.cpp
+    src/io/tg/v12/cinputstreamtg12.cpp \
+    src/graphics/pnote.cpp \
+    src/graphics/style/pstyle.cpp \
+    src/graphics/pbasic.cpp \
+    src/graphics/style/pnotestyle.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -144,4 +148,8 @@ HEADERS += \
     src/io/tg/cinputstream.h \
     src/io/tg/coutputstream.h \
     src/io/tg/v12/cstreamtg12.h \
-    src/io/tg/v12/cinputstreamtg12.h
+    src/io/tg/v12/cinputstreamtg12.h \
+    src/graphics/pnote.h \
+    src/graphics/style/pstyle.h \
+    src/graphics/pbasic.h \
+    src/graphics/style/pnotestyle.h

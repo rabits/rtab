@@ -97,7 +97,7 @@ public:
     inline void            channelRemove(const CChannel &val)               { m_channels.removeOne(val); emit channelsChanged(); }
 
     inline bool isEmpty() const { return measureHeadersCount() == 0 || tracksCount() == 0; }
-    void              clear()         { m_channels.clear(); m_measureHeaders.clear(); m_tracks.clear(); }
+    void        clear()         { m_channels.clear(); m_measureHeaders.clear(); m_tracks.clear(); }
 
 signals:
     void nameChanged();
