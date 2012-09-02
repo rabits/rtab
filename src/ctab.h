@@ -28,7 +28,8 @@
 
 #include "song/csong.h"
 
-class CTab : public QObject
+class CTab
+    : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QList<CSong*> songs       READ songs WRITE songs NOTIFY songsChanged)
@@ -59,7 +60,7 @@ public:
     inline quint8            fileHistoryCount()          const { return m_file_history.count(); }
     inline const QStringList fileHistory()               const { return m_file_history; }
     inline const QString     fileHistory(quint8 index)   const { return m_file_history[index]; }
-    inline void              fileHistoryAdd(QString val)       { m_file_history.prepend(val); fileHistorySave(); emit fileHistoryChanged(); }
+    inline void              fileHistoryAdd(const QString val);
     void                     fileHistorySave();
     void                     fileHistoryLoad();
 
@@ -81,11 +82,11 @@ private:
 
     QSettings     m_settings;
 
-    QList<CSong*> m_songs;
-    QStringList   m_file_history;
-
     QTranslator                   m_translator;
     QScopedPointer<QApplication> *m_app;
+
+    QList<CSong*> m_songs;
+    QStringList   m_file_history;
 };
 
 #endif // CTAB_H

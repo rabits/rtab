@@ -14,6 +14,7 @@ release: message("DEBUG MODE OFF")
 debug: release: error("debug release builds is not supported. Add to release build 'CONFIG-=debug' and to debug build 'CONFIG-=release' $${CONFIG}")
 
 QMAKE_CXXFLAGS += -std=c++0x
+QT += opengl
 
 # Add more folders to ship with the application, here
 folder_01.source = qml/rtab
@@ -49,7 +50,6 @@ CONFIG += qdeclarative-boostable
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \
     src/ctab.cpp \
-    src/tabulature/ctabulature.cpp \
     src/song/csong.cpp \
     src/song/ctrack.cpp \
     src/song/cmeasureheader.cpp \
@@ -89,7 +89,7 @@ SOURCES += main.cpp \
     src/graphics/pnote.cpp \
     src/graphics/style/pstyle.cpp \
     src/graphics/pbasic.cpp \
-    src/graphics/style/pnotestyle.cpp
+    src/graphics/psongview.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -107,7 +107,6 @@ OTHER_FILES += \
 
 HEADERS += \
     src/ctab.h \
-    src/tabulature/ctabulature.h \
     src/song/csong.h \
     src/song/ctrack.h \
     src/song/cmeasureheader.h \
@@ -152,4 +151,7 @@ HEADERS += \
     src/graphics/pnote.h \
     src/graphics/style/pstyle.h \
     src/graphics/pbasic.h \
-    src/graphics/style/pnotestyle.h
+    src/graphics/psongview.h
+
+RESOURCES += \
+    resources.qrc

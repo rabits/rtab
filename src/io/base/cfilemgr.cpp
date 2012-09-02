@@ -45,6 +45,10 @@ CSong* CFileMgr::load(QDataStream *stream) const
     log_info("Start loading file");
 
     stream->device()->open(QIODevice::ReadOnly);
+
+    if( ! stream->device()->isReadable() )
+        throw EXCEPTION(log_error("File is not readable"));
+
     stream->device()->reset();
     for( quint16 i = 0; i < inputStreamCount(); i++)
     {

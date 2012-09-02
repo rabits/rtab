@@ -13,6 +13,8 @@
 
 #include "ctab.h"
 
+#include <QtOpenGL/QGLWidget>
+
 #include "io/base/cfilemgr.h"
 #include <QFile>
 #include <QLocale>
@@ -50,6 +52,7 @@ CTab::CTab(QObject *parent)
 void CTab::initContext(QmlApplicationViewer &viewer, QScopedPointer<QApplication> *app)
 {
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+    viewer.setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel)));
 
     m_context = viewer.rootContext();
 
@@ -83,8 +86,17 @@ QVariant CTab::setting(QString key, QString value)
     return m_settings.value(key);
 }
 
+void CTab::fileHistoryAdd(const QString val)
+{
+    m_file_history.removeOne(val);
+    m_file_history.prepend(val);
+    fileHistorySave();
+    emit fileHistoryChanged();
+}
+
 void CTab::fileHistorySave()
 {
+    log_debug("Saving history");
     quint16 count = setting("preferences/file_history_max_count").toInt();
     if( fileHistoryCount() > count )
     {
@@ -95,6 +107,8 @@ void CTab::fileHistorySave()
     m_settings.beginWriteArray("file_history/song", count);
     for( quint16 i = 0; i < count; i++ )
     {
+        if( i >= fileHistoryCount() )
+            break;
         m_settings.setArrayIndex(i);
         m_settings.setValue("path", fileHistory(i));
     }
@@ -103,11 +117,13 @@ void CTab::fileHistorySave()
 
 void CTab::fileHistoryLoad()
 {
+    log_debug("Loading history");
     m_file_history.clear();
 
-    quint16 count = m_settings.beginReadArray("file_history/file");
+    quint16 count = m_settings.beginReadArray("file_history/song");
     for( quint16 i = 0; i < count; i++ )
     {
+        log_debug("Loading history");
         m_settings.setArrayIndex(i);
         m_file_history.append(m_settings.value("path").toString());
     }
@@ -118,14 +134,14 @@ void CTab::fileHistoryLoad()
 
 CSong* CTab::songOpen(QString file_path)
 {
-    log_notice("Start loading file '%1'", file_path);
+    log_notice("Begin loading file '%1'", file_path);
 
     QFile file(file_path);
     QDataStream *stream = NULL;
 
     try {
-        if( ! file.isReadable() )
-            throw EXCEPTION(log_error("File is not readable"));
+        if( ! file.exists() )
+            throw EXCEPTION(log_error("File is not exists"));
 
         stream = new QDataStream(&file);
         CSong *song = CFileMgr::i()->load(stream);

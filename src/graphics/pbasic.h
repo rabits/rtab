@@ -16,6 +16,7 @@
 
 #include <QDeclarativeItem>
 #include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
 #include "style/pstyle.h"
 
@@ -25,41 +26,32 @@ class PBasic
     Q_OBJECT
     Q_PROPERTY(qint16 x         READ x WRITE x NOTIFY xChanged)
     Q_PROPERTY(qint16 y         READ y WRITE y NOTIFY yChanged)
-    Q_PROPERTY(QColor color     READ color WRITE color NOTIFY colorChanged)
-    Q_PROPERTY(qint16 lineWidth READ lineWidth WRITE lineWidth NOTIFY lineWidthChanged)
-    Q_PROPERTY(qint16 size      READ size WRITE size NOTIFY sizeChanged)
+    Q_PROPERTY(PStyle style     READ style WRITE style NOTIFY styleChanged)
 
 public:
-    explicit PBasic(PStyle *style, QDeclarativeItem *parent = 0);
+    explicit PBasic(QDeclarativeItem *parent = 0);
+    PBasic(PStyle &style, QDeclarativeItem *parent = 0);
     PBasic(const PBasic &obj);
     PBasic& operator=(const PBasic &obj);
 
     // --API--- //
     inline       qint16     x()           const { return m_x; }
     inline       qint16     y()           const { return m_y; }
-    inline       qint16     lineWidth()   const { return m_lineWidth; }
-    inline       qint16     size()        const { return m_size; }
-    inline const QColor&    color()       const { return m_color; }
+    inline const PStyle     style()       const { return m_style; }
 
-    inline void x(const qint16 val)         { m_x = val; emit xChanged(); }
-    inline void y(const qint16 val)         { m_y = val; emit yChanged(); }
-    inline void lineWidth(const qint16 val) { m_lineWidth = val; emit lineWidthChanged(); }
-    inline void size(const qint16 val)      { m_size = val; emit sizeChanged(); }
-    inline void color(const QColor &val)    { m_color = val; emit colorChanged(); }
+    inline void x(const qint16 val)     { if( m_x == val ) return; m_x = val; emit xChanged(); emit update(); }
+    inline void y(const qint16 val)     { if( m_y == val ) return; m_y = val; emit yChanged(); emit update(); }
+    inline void style(const PStyle val) { if( m_style == val ) return; m_style = val; emit styleChanged(); emit update(); }
 
 signals:
     void xChanged();
     void yChanged();
-    void lineWidthChanged();
-    void sizeChanged();
-    void colorChanged();
+    void styleChanged();
 
 protected:
     qint16 m_x;
     qint16 m_y;
-    qint16 m_lineWidth;
-    qint16 m_size;
-    QColor m_color;
+    PStyle m_style;
 };
 
 #endif // PBASIC_H

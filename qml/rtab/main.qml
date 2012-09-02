@@ -12,10 +12,17 @@
  */
 
 import QtQuick 1.1
+import RTab 1.0
 
 Rectangle {
     height: 200
     width: 400
+
+    RSongView {
+        anchors.fill: parent
+        song: ctab.songOpen("/home/psa/Projects/rtab/tmp/test01.v121.tg")
+    }
+
     Text {
         id: screen_size
         text: "Screen size: " + ctab.setting("preferences/device_screen")

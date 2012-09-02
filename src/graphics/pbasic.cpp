@@ -13,22 +13,37 @@
 
 #include "pbasic.h"
 
-PBasic::PBasic(PStyle *style, QDeclarativeItem *parent)
+PBasic::PBasic(QDeclarativeItem *parent)
     : QDeclarativeItem(parent)
     , m_x(0)
     , m_y(0)
-    , m_lineWidth(style->lineWidth())
-    , m_size(style->size())
-    , m_color(style->foregroundColor())
+    , m_style(PStyle::defaultStyle())
 {
+    setFlag(QGraphicsItem::ItemHasNoContents, false);
+}
+
+PBasic::PBasic(PStyle &style, QDeclarativeItem *parent)
+    : QDeclarativeItem(parent)
+    , m_x(0)
+    , m_y(0)
+    , m_style(style)
+{
+    setFlag(QGraphicsItem::ItemHasNoContents, false);
 }
 
 PBasic::PBasic(const PBasic &obj)
+    : QDeclarativeItem()
+    , m_x(obj.x())
+    , m_y(obj.y())
+    , m_style(obj.style())
 {
-    // TODO:
 }
 
 PBasic &PBasic::operator =(const PBasic &obj)
 {
-    // TODO:
+    x(obj.x());
+    y(obj.y());
+    style(obj.style());
+
+    return *this;
 }

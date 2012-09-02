@@ -13,8 +13,11 @@
 
 #include "pnote.h"
 
-PNote::PNote(PNoteStyle *style, QDeclarativeItem *parent)
-    : PBasic(style, parent)
+PNote::PNote(QDeclarativeItem *parent)
+    : PBasic(parent)
 {
-    setFlag(QGraphicsItem::ItemHasNoContents, false);
+}
+
+void PNote::paint(QPainter *painter, const QStyleOptionGraphicsItem *opts, QWidget *)
+{
 }

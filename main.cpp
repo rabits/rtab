@@ -20,6 +20,7 @@
 using namespace Common;
 
 #include "src/ctab.h"
+#include "src/graphics/psongview.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
@@ -33,19 +34,19 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     try {
         QScopedPointer<QApplication> app(createApplication(argc, argv));
 
+        PSongView::exportGraphic();
+
         QmlApplicationViewer viewer;
 
         log_info("Creating context");
         CTab::i()->initContext(viewer, &app);
 
         log_info("Loading qml");
-        viewer.setMainQmlFile(QLatin1String("qml/rtab/main.qml"));
+        viewer.setSource(QUrl("qrc:/qml/main.qml"));
 
         CTab::i()->initRoot(viewer);
 
         log_notice("Init done, starting");
-
-        CTab::i()->songOpen("tmp/test07.v121.tg");
 
         viewer.showExpanded();
         return app->exec();

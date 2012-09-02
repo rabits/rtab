@@ -15,7 +15,6 @@
 #define PNOTE_H
 
 #include "pbasic.h"
-#include "style/pnotestyle.h"
 
 class PNote
     : public PBasic
@@ -23,7 +22,9 @@ class PNote
     Q_OBJECT
 
 public:
-    explicit PNote(PNoteStyle *style, QDeclarativeItem *parent = 0);
+    explicit PNote(QDeclarativeItem *parent = 0);
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *opts, QWidget *);
 
 signals:
 

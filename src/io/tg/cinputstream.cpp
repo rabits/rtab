@@ -228,7 +228,7 @@ void CInputStream::readMeasureHeader(CMeasureHeader &measure_header, qint32 numb
     if( (header & MEASURE_HEADER_TRIPLET_FEEL) != 0 )
         measure_header.tripletFeel(readByte());
     else
-        measure_header.tripletFeel( (last_header != NULL) ? last_header->tripletFeel() : CMeasureHeader::TRIPLET_FEEL_NONE );
+        measure_header.tripletFeel( (last_header != NULL) ? last_header->tripletFeel() : (qint8)CMeasureHeader::TRIPLET_FEEL_NONE );
 }
 
 void CInputStream::readTempo(CTempo &tempo)
@@ -289,7 +289,7 @@ CMeasure CInputStream::readMeasure(CMeasureHeader &measure_header, CMeasure *las
     if( (header & MEASURE_CLEF) != 0 )
         measure.clef(readByte());
     else
-        measure.clef((last_measure == NULL) ? CMeasure::CLEF_TREBLE : last_measure->clef());
+        measure.clef((last_measure == NULL) ? (qint8)CMeasure::CLEF_TREBLE : last_measure->clef());
 
     log_debug("Reading key signature");
     if( (header & MEASURE_KEYSIGNATURE) != 0 )
