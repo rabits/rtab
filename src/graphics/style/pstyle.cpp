@@ -24,10 +24,10 @@ PStyle::PStyle(QObject *parent)
     , m_topPadding(16)
     , m_bottomPadding(16)
     , m_foregroundColor(Qt::black)
-    , m_backgroundColor(Qt::gray)
+    , m_backgroundColor(Qt::white)
     , m_borderColor(Qt::black)
     , m_selectedForegroundColor(Qt::white)
-    , m_selectedBackgroundColor(Qt::gray)
+    , m_selectedBackgroundColor(Qt::black)
     , m_selectedBorderColor(Qt::white)
 {
 }

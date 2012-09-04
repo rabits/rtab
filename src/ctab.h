@@ -52,9 +52,9 @@ public:
     inline void                 songs(QList<CSong*> &val) { m_songs = val; emit songsChanged(); }
 
     inline quint8       songsCount()           const { return m_songs.count(); }
-    inline const CSong* song(quint8 index)     const { return m_songs[index]; }
-    inline CSong*       song(quint8 index)           { return m_songs[index]; }
-    inline void         songAdd(CSong *val)          { m_songs.append(val); emit songsChanged(); }
+    inline const CSong* song(quint8 index)     const { return m_songs.at(index); }
+    inline CSong*       song(quint8 index)           { return m_songs.at(index); }
+    inline CSong*       songAdd(CSong *val)          { m_songs.append(val); emit songsChanged(); return m_songs.last(); }
     inline void         songRemove(CSong *val)       { delete val; m_songs.removeOne(val); emit songsChanged(); }
 
     inline quint8            fileHistoryCount()          const { return m_file_history.count(); }
@@ -74,6 +74,7 @@ signals:
 
 private:
     explicit CTab(QObject *parent = 0);
+    ~CTab();
 
     static CTab* sp_instance;
 

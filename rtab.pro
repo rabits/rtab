@@ -151,7 +151,9 @@ HEADERS += \
     src/graphics/pnote.h \
     src/graphics/style/pstyle.h \
     src/graphics/pbasic.h \
-    src/graphics/psongview.h
+    src/graphics/psongview.h \
+    src/graphics/graphics.h \
+    src/song/song.h
 
 RESOURCES += \
     resources.qrc

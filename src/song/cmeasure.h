@@ -34,7 +34,7 @@ class CMeasure
     Q_PROPERTY(CTrack*         track READ track WRITE track NOTIFY trackChanged)
 
 public:
-    explicit CMeasure(CMeasureHeader *header, QObject *parent = 0);
+    explicit CMeasure(CMeasureHeader *header = NULL, QObject *parent = 0);
     CMeasure(const CMeasure &obj);
     CMeasure(CMeasureHeader &obj);
     CMeasure& operator=(const CMeasure &obj);

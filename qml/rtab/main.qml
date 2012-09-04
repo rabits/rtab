@@ -15,11 +15,20 @@ import QtQuick 1.1
 import RTab 1.0
 
 Rectangle {
-    height: 200
-    width: 400
+    id: main
+
+    border.width: 0
+    color: "#000"
+
+    width:  (ctab.setting("preferences/screen_width")  > 0) ? ctab.setting("preferences/screen_width")  : 800
+    height: (ctab.setting("preferences/screen_height") > 0) ? ctab.setting("preferences/screen_height") : 600
+
+    onWidthChanged: ctab.setting("preferences/screen_width", main.width);
+    onHeightChanged: ctab.setting("preferences/screen_height", main.height);
 
     RSongView {
         anchors.fill: parent
+        anchors.margins: 10
         song: ctab.songOpen("/home/psa/Projects/rtab/tmp/test01.v121.tg")
     }
 

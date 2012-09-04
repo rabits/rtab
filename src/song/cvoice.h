@@ -35,7 +35,7 @@ class CVoice
     Q_PROPERTY(CBeat*       beat READ beat WRITE beat NOTIFY beatChanged)
 
 public:
-    explicit CVoice(const quint8 index, QObject *parent = 0);
+    explicit CVoice(const quint8 index = 0, QObject *parent = 0);
     CVoice(const CVoice &obj);
     CVoice& operator=(const CVoice &obj);
 

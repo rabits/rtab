@@ -30,7 +30,7 @@ class CChord
     Q_PROPERTY(CBeat*       beat READ beat WRITE beat NOTIFY beatChanged)
 
 public:
-    explicit CChord(qint8 length, QObject *parent = 0);
+    explicit CChord(qint8 length = 6, QObject *parent = 0);
     CChord(const CChord &obj);
     CChord& operator=(const CChord &obj);
 

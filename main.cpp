@@ -20,7 +20,8 @@
 using namespace Common;
 
 #include "src/ctab.h"
-#include "src/graphics/psongview.h"
+#include "src/graphics/graphics.h"
+#include "src/song/song.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
@@ -31,10 +32,13 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("rtab");
     QCoreApplication::setApplicationVersion(PROJECT_VERSION);
 
+    int return_code = 0;
+
     try {
         QScopedPointer<QApplication> app(createApplication(argc, argv));
 
-        PSongView::exportGraphic();
+        Song::exportQML();
+        Graphics::exportQML();
 
         QmlApplicationViewer viewer;
 
@@ -49,7 +53,11 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
         log_notice("Init done, starting");
 
         viewer.showExpanded();
-        return app->exec();
+        return_code = app->exec();
+
+        CTab::destroyInstance();
+
+        return return_code;
     }
     catch( Common::CException const &e ) {
         log_emerg("An unhandled exception has occured: %1", e.what());
@@ -59,6 +67,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     }
 
     log_emerg("Abnormally exiting...");
+
+    CTab::destroyInstance();
 
     return 1;
 }

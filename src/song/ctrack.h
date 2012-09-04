@@ -38,7 +38,7 @@ class CTrack
     Q_PROPERTY(QList<CMeasure> measures READ measures WRITE measures NOTIFY measuresChanged)
     Q_PROPERTY(QList<CString>  strings READ strings WRITE strings NOTIFY stringsChanged)
     Q_PROPERTY(QColor          color READ color WRITE color NOTIFY colorChanged)
-    Q_PROPERTY(CLyrics          lyrics READ lyrics WRITE lyrics NOTIFY lyricsChanged)
+    Q_PROPERTY(CLyrics         lyrics READ lyrics WRITE lyrics NOTIFY lyricsChanged)
     Q_PROPERTY(CSong*          song READ song WRITE song NOTIFY songChanged)
 
 public:

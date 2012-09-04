@@ -16,6 +16,8 @@
 
 #include "pbasic.h"
 
+#include <QRect>
+
 #include "../song/csong.h"
 
 class PSongView
@@ -23,27 +25,28 @@ class PSongView
 {
     Q_OBJECT
     Q_PROPERTY(CSong* song     READ song WRITE song NOTIFY songChanged)
+    Q_PROPERTY(quint8 track    READ track WRITE track NOTIFY trackChanged)
 
 public:
     explicit PSongView(QDeclarativeItem *parent = 0);
 
     // --API--- //
     inline CSong* song()   const { return m_song; }
+    inline quint8 track()  const { return m_track; }
 
     inline void song(CSong *val)  { if( m_song == val ) return; m_song = val; emit songChanged(); emit update(); }
+    inline void track(quint8 val) { if( m_track == val ) return; m_track = val; emit trackChanged(); emit update(); }
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *opts, QWidget *);
 
-    inline static void exportGraphic()
-    {
-        qmlRegisterType<PSongView>("RTab", 1, 0, "RSongView");
-    }
-
 signals:
     void songChanged();
+    void trackChanged();
 
 protected:
-    CSong *m_song;
+    void paintTrack(QPainter *painter, const QRect &rect);
+    CSong  *m_song;
+    quint8  m_track;
 };
 
 #endif // PSONGVIEW_H

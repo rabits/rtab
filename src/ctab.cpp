@@ -49,6 +49,11 @@ CTab::CTab(QObject *parent)
     fileHistoryLoad();
 }
 
+CTab::~CTab()
+{
+    log_notice("Destroying rTab v%1", PROJECT_VERSION);
+}
+
 void CTab::initContext(QmlApplicationViewer &viewer, QScopedPointer<QApplication> *app)
 {
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
@@ -81,7 +86,10 @@ void CTab::initRoot(QmlApplicationViewer &viewer)
 QVariant CTab::setting(QString key, QString value)
 {
     if( ! value.isEmpty() )
+    {
+        log_debug("Set setting %1 = %2", key, value);
         m_settings.setValue(key, value);
+    }
 
     return m_settings.value(key);
 }
@@ -123,7 +131,6 @@ void CTab::fileHistoryLoad()
     quint16 count = m_settings.beginReadArray("file_history/song");
     for( quint16 i = 0; i < count; i++ )
     {
-        log_debug("Loading history");
         m_settings.setArrayIndex(i);
         m_file_history.append(m_settings.value("path").toString());
     }
@@ -149,7 +156,7 @@ CSong* CTab::songOpen(QString file_path)
         if( song == NULL )
             throw EXCEPTION(log_error("Song can't be created"));
 
-        songAdd(song);
+        song = songAdd(song);
         log_info("File loading completed '%1'", file_path);
         fileHistoryAdd(file_path);
 
